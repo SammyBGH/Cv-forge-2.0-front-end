@@ -1,0 +1,260 @@
+.builder-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.download-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  backdrop-filter: blur(8px);
+}
+
+.ribbon-ok {
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.ribbon-warn {
+  background: rgba(251, 191, 36, 0.18);
+}
+
+.ribbon-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.builder-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.88);
+  flex-wrap: wrap;
+}
+
+.builder-topbar-left {
+  flex: 0 0 auto;
+}
+
+.builder-back {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.builder-back:hover {
+  color: var(--text);
+}
+
+.title-input {
+  flex: 1;
+  min-width: 200px;
+  border: none;
+  background: transparent;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.title-input:focus {
+  outline: none;
+}
+
+.builder-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.zoom-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.zoom-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  min-width: 44px;
+  text-align: center;
+}
+
+.builder-split {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(320px, 440px) 1fr;
+  min-height: calc(100vh - 130px);
+}
+
+@media (max-width: 1100px) {
+  .builder-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.builder-editor-pane {
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  overflow: auto;
+  padding: 1.25rem clamp(1rem, 3vw, 1.5rem);
+}
+
+.builder-preview-pane {
+  padding: 1rem clamp(1rem, 3vw, 2rem);
+  overflow: auto;
+}
+
+.pane-header h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--display);
+}
+
+.translate-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border);
+  margin-bottom: 1rem;
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.translate-heading {
+  margin: 0;
+  font-size: 0.95rem;
+  font-family: var(--display);
+}
+
+.translate-intro {
+  margin: 0;
+}
+
+.translate-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.translate-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.translate-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.translate-select {
+  min-width: 200px;
+  flex: 1;
+}
+
+.translate-other {
+  min-width: 180px;
+  flex: 2;
+}
+
+.translate-footnote {
+  margin: 0;
+}
+
+.section-order {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section-order-row {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 0.85rem;
+  background: var(--surface-2);
+}
+
+.section-order-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.reorder {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.preview-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+
+.preview-toolbar h2 {
+  margin: 0;
+  font-family: var(--display);
+}
+
+.preview-stage {
+  transform-origin: top center;
+  transition: transform 0.2s ease;
+  margin: 0 auto;
+  max-width: 820px;
+}
+
+.items-editor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.items-editor-head > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.items-card {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  padding: 0.65rem;
+  background: var(--surface);
+}
+
+.item-grid-dynamic {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.55rem;
+}

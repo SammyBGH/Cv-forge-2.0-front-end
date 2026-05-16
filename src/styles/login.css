@@ -1,0 +1,72 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(320px, 520px) 1fr;
+}
+
+.login-card {
+  padding: clamp(2rem, 5vw, 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.back-to-home {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.back-to-home:hover {
+  color: var(--text);
+}
+
+.brand-mark {
+  font-family: var(--display);
+  letter-spacing: -0.02em;
+  font-size: 1.35rem;
+  margin-bottom: 1rem;
+}
+
+.login-title {
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  margin: 0 0 0.75rem;
+}
+
+.login-sub {
+  margin: 0 0 1.75rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.login-actions {
+  margin-bottom: 1rem;
+}
+
+.login-footnote {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.login-hero {
+  position: relative;
+  background: radial-gradient(600px 400px at 30% 20%, rgba(37, 99, 235, 0.25), transparent),
+    linear-gradient(145deg, #0f172a, #1e293b);
+}
+
+@media (max-width: 960px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+  .login-hero {
+    min-height: 180px;
+  }
+}

@@ -1,0 +1,26 @@
+.pay-callback {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.pay-callback-card {
+  background: var(--surface);
+  padding: 2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  max-width: 420px;
+  width: 100%;
+}
+
+.pay-callback-card h1 {
+  margin-top: 0;
+  font-family: var(--display);
+}
+
+.pay-callback-card .btn-secondary {
+  margin-top: 1rem;
+  display: inline-flex;
+}
