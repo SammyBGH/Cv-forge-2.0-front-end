@@ -1,5 +1,7 @@
 const TOKEN_KEY = 'cvforge_token';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
@@ -12,7 +14,9 @@ export function setToken(token) {
 async function request(path, options = {}) {
   const headers = new Headers(options.headers || {});
   const token = getToken();
+
   if (token) headers.set('Authorization', `Bearer ${token}`);
+
   if (!headers.has('Content-Type') && options.body && typeof options.body === 'object') {
     headers.set('Content-Type', 'application/json');
   }
@@ -22,14 +26,16 @@ async function request(path, options = {}) {
       ? JSON.stringify(options.body)
       : options.body;
 
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${API_BASE}/api${path}`, {
     ...options,
     headers,
     body,
   });
 
   const text = await res.text();
+
   let data = null;
+
   try {
     data = text ? JSON.parse(text) : null;
   } catch {
@@ -43,6 +49,7 @@ async function request(path, options = {}) {
     err.details = data?.details;
     throw err;
   }
+
   return data;
 }
 
@@ -57,7 +64,8 @@ export const api = {
   deleteCv: (id) => request(`/cvs/${id}`, { method: 'DELETE' }),
   paymentConfig: () => request('/payments/config'),
   initPayment: (body) => request('/payments/initialize', { method: 'POST', body }),
-  verifyPayment: (reference) => request(`/payments/verify?reference=${encodeURIComponent(reference)}`),
+  verifyPayment: (reference) =>
+    request(`/payments/verify?reference=${encodeURIComponent(reference)}`),
   downloadStatus: (cvId) => request(`/downloads/status/${cvId}`),
   authorizeDownload: (cvId) => request(`/downloads/authorize/${cvId}`),
   templates: () => request('/templates'),
