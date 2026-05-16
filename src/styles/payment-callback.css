@@ -24,3 +24,18 @@
   margin-top: 1rem;
   display: inline-flex;
 }
+
+@media (max-width: 720px) {
+  .pay-callback {
+    padding: 1rem;
+  }
+
+  .pay-callback-card {
+    padding: 1.5rem;
+  }
+
+  .pay-callback-card .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -10,12 +10,31 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.65rem clamp(1rem, 3vw, 2rem);
-  border-bottom: 1px solid var(--border);
+  padding: 0.75rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
   position: sticky;
   top: 0;
   z-index: 30;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 40px rgba(15, 23, 42, 0.08);
+}
+
+.builder-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.96);
+  flex-wrap: wrap;
+  box-shadow: inset 0 -1px 0 rgba(226, 232, 240, 0.5);
+}
+
+.builder-editor-pane,
+.builder-preview-pane {
+  background: linear-gradient(180deg, #ffffff, #f8faff);
+  border-radius: var(--radius);
 }
 
 .ribbon-ok {
@@ -257,4 +276,75 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 0.55rem;
+}
+
+@media (max-width: 720px) {
+  .download-ribbon,
+  .builder-topbar {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .download-ribbon {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .ribbon-actions {
+    justify-content: flex-start;
+  }
+
+  .builder-topbar {
+    gap: 0.65rem;
+  }
+
+  .builder-back {
+    font-size: 0.95rem;
+  }
+
+  .title-input {
+    min-width: 0;
+    font-size: 1.1rem;
+  }
+
+  .builder-editor-pane,
+  .builder-preview-pane {
+    padding: 1rem 0.85rem;
+  }
+
+  .builder-split {
+    min-height: auto;
+  }
+
+  .preview-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .preview-stage {
+    width: 100%;
+    max-width: 100%;
+    transform: none;
+  }
+
+  .translate-inline,
+  .items-editor-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .translate-select,
+  .translate-other {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .items-editor-head > div:first-child {
+    min-width: 0;
+  }
+
+  .item-grid-dynamic {
+    grid-template-columns: 1fr;
+  }
 }
