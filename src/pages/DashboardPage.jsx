@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../api/client.js';
 import AppShell from '../components/layout/AppShell.jsx';
@@ -7,6 +7,7 @@ import '../styles/dashboard.css';
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [cvs, setCvs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -29,7 +30,7 @@ export default function DashboardPage() {
     setCreating(true);
     try {
       const data = await api.createCv({ title: 'New CV' });
-      window.location.href = `/builder/${data.cv._id}`;
+      navigate(`/builder/${data.cv._id}`);
     } catch (e) {
       alert(e.message);
     } finally {
@@ -41,7 +42,7 @@ export default function DashboardPage() {
     try {
       const data = await api.duplicateCv(id);
       await refresh();
-      window.location.href = `/builder/${data.cv._id}`;
+      navigate(`/builder/${data.cv._id}`);
     } catch (e) {
       alert(e.message);
     }
