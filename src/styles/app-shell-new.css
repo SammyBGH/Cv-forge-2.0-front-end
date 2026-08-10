@@ -1,0 +1,155 @@
+/* ========================================
+   APP SHELL - PREMIUM REDESIGN
+   Clean, functional, sophisticated
+   ======================================== */
+
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-base);
+}
+
+/* ========================================
+   HEADER
+   Minimal, elegant, purposeful
+   ======================================== */
+
+.shell-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-40);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.shell-header-inner {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.shell-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: opacity var(--duration-150) var(--ease-out);
+}
+
+.brand-link:hover {
+  opacity: 0.8;
+}
+
+.logo-dot {
+  width: 24px;
+  height: 24px;
+  background: var(--brand-primary);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.shell-crumb {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-tertiary);
+  padding-left: var(--space-6);
+  border-left: 1px solid var(--border-subtle);
+}
+
+.shell-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.shell-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.shell-user:hover {
+  border-color: var(--border-default);
+  background: var(--bg-subtle);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.shell-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ========================================
+   MAIN CONTENT
+   Clean, spacious, focused
+   ======================================== */
+
+.shell-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .shell-header-inner {
+    padding: 0 var(--space-4);
+    height: 56px;
+  }
+
+  .shell-brand {
+    gap: var(--space-4);
+  }
+
+  .shell-crumb {
+    display: none;
+  }
+
+  .shell-user {
+    padding: var(--space-2);
+  }
+
+  .shell-name {
+    display: none;
+  }
+
+  .avatar {
+    width: 28px;
+    height: 28px;
+  }
+}

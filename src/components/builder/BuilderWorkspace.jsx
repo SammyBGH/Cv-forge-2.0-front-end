@@ -2,12 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { pdf } from '@react-pdf/renderer';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useCVBuilder } from '../../context/CVBuilderContext.jsx';
+import { useToast } from '../../context/ToastContext.jsx';
 import { api } from '../../api/client.js';
 import SectionFormRouter from './SectionFormRouter.jsx';
 import CVPreview from '../preview/CVPreview.jsx';
 import DownloadRibbon from './DownloadRibbon.jsx';
 import { CVPdfDocument } from '../pdf/CVPdfDocument.jsx';
-import '../../styles/builder.css';
+import '../../styles/builder-new.css';
 
 const SECTION_KIND_LABELS = {
   personal: 'Contact details',
@@ -35,6 +36,7 @@ const TRANSLATION_CHOICES = [
 
 export default function BuilderWorkspace({ headerLeft }) {
   const { user } = useAuth();
+  const { addToast } = useToast();
   const { cv, loading, error, updateCv, reorderSections, flushSave } = useCVBuilder();
   const [zoom, setZoom] = useState(0.92);
   const [downloadStatus, setDownloadStatus] = useState({ allowed: false, secondsRemaining: 0, validUntil: null });
@@ -76,7 +78,7 @@ export default function BuilderWorkspace({ headerLeft }) {
       });
       window.location.href = init.authorizationUrl;
     } catch (e) {
-      alert(e.message);
+      addToast(e.message || 'Payment initialization failed', 'error');
     } finally {
       setPayBusy(false);
     }
@@ -88,10 +90,10 @@ export default function BuilderWorkspace({ headerLeft }) {
       await api.authorizeDownload(cv._id);
     } catch (e) {
       if (e.status === 402) {
-        alert('Complete checkout to unlock PDF export.');
+        addToast('Complete checkout to unlock PDF export.', 'warning');
         return;
       }
-      alert(e.message);
+      addToast(e.message || 'Authorization failed', 'error');
       return;
     }
 
@@ -101,10 +103,12 @@ export default function BuilderWorkspace({ headerLeft }) {
       const a = document.createElement('a');
       a.href = url;
       a.download = `${cv.title || 'cv'}.pdf`;
+      document.body.appendChild(a);
       a.click();
       URL.revokeObjectURL(url);
+      addToast('PDF downloaded successfully', 'success');
     } catch (e) {
-      alert(e.message || 'PDF export failed');
+      addToast(e.message || 'PDF export failed', 'error');
     }
   }
 
@@ -246,7 +250,7 @@ export default function BuilderWorkspace({ headerLeft }) {
                   const targetLanguage =
                     translateLang === '__custom__' ? translateOther.trim() : translateLang;
                   if (!targetLanguage) {
-                    alert('Choose a language from the list or type one under “Other”.');
+                    addToast('Choose a language from the list or type one under "Other".', 'warning');
                     return;
                   }
                   startCheckout('translation', { targetLanguage });

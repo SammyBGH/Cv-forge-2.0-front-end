@@ -4,28 +4,19 @@ import { useCVBuilder } from '../../../context/CVBuilderContext.jsx';
 
 import { isFieldLocked } from '../../../utils/locks.js';
 
-import QuickPickSelect from '../../ui/QuickPickSelect.jsx';
+import AutocompleteInput from '../../ui/AutocompleteInput.jsx';
 
 
 
 const HEADLINE_SUGGESTIONS = [
-
   'Recent graduate seeking entry-level role',
-
   'Customer-focused professional',
-
   'Detail-oriented team member',
-
   'Motivated student seeking internship',
-
   'Reliable worker with flexible schedule',
-
   'Organized administrator',
-
   'Creative problem-solver',
-
   'Bilingual customer support professional',
-
 ];
 
 
@@ -56,9 +47,9 @@ export default function PersonalEditor({ section, cv }) {
 
       label: 'Full name',
 
-      hint: 'As you want it to appear on your CV.',
-
       placeholder: 'Your name',
+
+      required: true,
 
     },
 
@@ -67,8 +58,6 @@ export default function PersonalEditor({ section, cv }) {
       key: 'headline',
 
       label: 'Headline',
-
-      hint: 'One short line: what you do or what you are looking for.',
 
       placeholder: 'e.g. Biology graduate · Retail experience',
 
@@ -82,13 +71,13 @@ export default function PersonalEditor({ section, cv }) {
 
       label: 'Email',
 
-      hint: 'Use an address you check often.',
-
       placeholder: 'you@example.com',
 
       inputMode: 'email',
 
       autoComplete: 'email',
+
+      required: true,
 
     },
 
@@ -97,8 +86,6 @@ export default function PersonalEditor({ section, cv }) {
       key: 'phone',
 
       label: 'Phone',
-
-      hint: 'Include country code if you apply internationally.',
 
       placeholder: 'Your phone number',
 
@@ -114,8 +101,6 @@ export default function PersonalEditor({ section, cv }) {
 
       label: 'City / region',
 
-      hint: 'Helps employers see commute or relocation — optional.',
-
       placeholder: 'e.g. Accra · Remote',
 
     },
@@ -125,8 +110,6 @@ export default function PersonalEditor({ section, cv }) {
       key: 'website',
 
       label: 'Website or portfolio',
-
-      hint: 'Optional link to your work, LinkedIn post, or blog.',
 
       placeholder: 'https://…',
 
@@ -142,15 +125,13 @@ export default function PersonalEditor({ section, cv }) {
 
       label: 'LinkedIn or professional profile',
 
-      hint: 'Another way to learn about you — optional.',
-
       placeholder: 'Profile URL',
 
       inputMode: 'url',
 
     },
 
-  ];
+    ];
 
 
 
@@ -164,93 +145,67 @@ export default function PersonalEditor({ section, cv }) {
 
         const baseId = `${rid}-${f.key}`;
 
-        const hintId = f.hint ? `${baseId}-hint` : undefined;
-
-        const listId = f.suggestions?.length ? `${baseId}-list` : undefined;
-
-        const describedBy = [hintId].filter(Boolean).join(' ') || undefined;
-
 
 
         return (
 
           <div key={f.key} className="field">
 
-            <span className="field-label" id={`${baseId}-lbl`}>
+            <label className="field-label" htmlFor={baseId}>
 
               {f.label}
 
+              {f.required && <span className="field-required">*</span>}
+
               {locked ? <span className="lock-tag">Locked after paid export</span> : null}
 
-            </span>
+            </label>
 
-            {!locked && f.suggestions?.length ? (
+            {f.suggestions && !locked ? (
 
-              <QuickPickSelect
+              <AutocompleteInput
 
-                id={`${baseId}-quick`}
+                id={baseId}
 
-                options={f.suggestions}
+                value={d[f.key] || ''}
 
-                ariaLabel={`Quick pick: ${f.label}`}
+                onChange={(v) => patch(f.key, v)}
 
-                onPick={(v) => patch(f.key, v)}
+                suggestions={f.suggestions}
+
+                placeholder={f.placeholder}
+
+                disabled={locked}
+
+                required={f.required}
 
               />
 
-            ) : null}
+            ) : (
 
-            <input
+              <input
 
-              id={baseId}
+                id={baseId}
 
-              className="input"
+                className="input"
 
-              type="text"
+                type="text"
 
-              aria-labelledby={`${baseId}-lbl`}
+                placeholder={f.placeholder}
 
-              aria-describedby={describedBy}
+                inputMode={f.inputMode}
 
-              placeholder={f.placeholder}
+                autoComplete={f.autoComplete}
 
-              list={locked ? undefined : listId}
+                value={d[f.key] || ''}
 
-              inputMode={f.inputMode}
+                disabled={locked}
 
-              autoComplete={f.autoComplete}
+                onChange={(e) => patch(f.key, e.target.value)}
 
-              value={d[f.key] || ''}
+              />
 
-              disabled={locked}
-
-              onChange={(e) => patch(f.key, e.target.value)}
-
-            />
-
-            {!locked && f.suggestions?.length ? (
-
-              <datalist id={listId}>
-
-                {f.suggestions.map((opt) => (
-
-                  <option key={opt} value={opt} />
-
-                ))}
-
-              </datalist>
-
-            ) : null}
-
-            {f.hint ? (
-
-              <span id={hintId} className="field-hint">
-
-                {f.hint}
-
-              </span>
-
-            ) : null}
+            )}
 
           </div>
 

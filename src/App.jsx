@@ -3,7 +3,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import BuilderPage from './pages/BuilderPage.jsx';
 import PaymentCallbackPage from './pages/PaymentCallbackPage.jsx';
-import HomePage from './pages/HomePage.jsx';
+import HomePage from './pages/HomePageNew.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 
 export default function App() {

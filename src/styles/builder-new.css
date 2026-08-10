@@ -1,0 +1,384 @@
+/* ========================================
+   BUILDER - PREMIUM REDESIGN
+   Clean, focused, professional
+   ======================================== */
+
+.builder-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-base);
+}
+
+/* ========================================
+   DOWNLOAD RIBBON
+   Subtle, informative, non-intrusive
+   ======================================== */
+
+.download-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-30);
+}
+
+.ribbon-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+}
+
+.ribbon-status.ok {
+  color: var(--success);
+}
+
+.ribbon-status.warn {
+  color: var(--warning);
+}
+
+.ribbon-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* ========================================
+   BUILDER TOPBAR
+   Clean, functional, minimal
+   ======================================== */
+
+.builder-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.builder-back {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-150) var(--ease-out);
+}
+
+.builder-back:hover {
+  color: var(--text-primary);
+}
+
+.title-input {
+  flex: 1;
+  min-width: 200px;
+  border: none;
+  background: transparent;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  padding: var(--space-2) 0;
+}
+
+.title-input:focus {
+  outline: none;
+}
+
+.title-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.builder-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.zoom-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.zoom-label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--text-tertiary);
+  min-width: 48px;
+  text-align: center;
+}
+
+/* ========================================
+   BUILDER SPLIT
+   Editor + Preview layout
+   ======================================== */
+
+.builder-split {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(400px, 480px) 1fr;
+  min-height: calc(100vh - 140px);
+}
+
+@media (max-width: 1100px) {
+  .builder-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   EDITOR PANE
+   Clean, structured, focused
+   ======================================== */
+
+.builder-editor-pane {
+  border-right: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  overflow: auto;
+  padding: var(--space-6);
+}
+
+.pane-header {
+  margin-bottom: var(--space-8);
+}
+
+.pane-header h2 {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  margin: 0 0 var(--space-2);
+}
+
+.pane-header p {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ========================================
+   TRANSLATE ROW
+   Clean, contained, functional
+   ======================================== */
+
+.translate-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-6);
+}
+
+.translate-heading {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  margin: 0;
+}
+
+.translate-intro {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.translate-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.translate-label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--text-tertiary);
+}
+
+.translate-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+/* ========================================
+   SECTION ORDER
+   Structured, interactive
+   ======================================== */
+
+.section-order {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.section-order-row {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
+.section-order-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.reorder {
+  display: inline-flex;
+  gap: var(--space-1);
+}
+
+/* ========================================
+   PREVIEW PANE
+   Clean, focused, minimal
+   ======================================== */
+
+.builder-preview-pane {
+  background: var(--bg-subtle);
+  padding: var(--space-6);
+  overflow: auto;
+}
+
+.preview-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-6);
+}
+
+.preview-toolbar h2 {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin: 0;
+}
+
+.preview-toolbar span {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+
+.preview-stage {
+  transform-origin: top center;
+  transition: transform var(--duration-200) var(--ease-out);
+  margin: 0 auto;
+  max-width: 820px;
+  background: white;
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* ========================================
+   ITEMS EDITOR
+   Clean, structured, functional
+   ======================================== */
+
+.items-editor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.items-editor-head > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.items-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
+.item-grid-dynamic {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .download-ribbon,
+  .builder-topbar {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .download-ribbon {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .ribbon-actions {
+    justify-content: flex-start;
+  }
+
+  .builder-topbar {
+    gap: var(--space-3);
+  }
+
+  .builder-editor-pane,
+  .builder-preview-pane {
+    padding: var(--space-4);
+  }
+
+  .builder-split {
+    min-height: auto;
+  }
+
+  .preview-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .preview-stage {
+    width: 100%;
+    max-width: 100%;
+    transform: none;
+  }
+
+  .translate-inline,
+  .items-editor-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .item-grid-dynamic {
+    grid-template-columns: 1fr;
+  }
+}

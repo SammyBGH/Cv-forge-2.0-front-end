@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext.jsx';
-import '../styles/login.css';
+import { useToast } from '../context/ToastContext.jsx';
+import '../styles/login-new.css';
 
 export default function LoginPage() {
   const { loginWithGoogle, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { addToast } = useToast();
   const from = location.state?.from || '/dashboard';
 
   useEffect(() => {
@@ -16,38 +18,48 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      <div className="login-card fade-in">
-        <Link to="/" className="back-to-home">
-          ← Back to home
-        </Link>
-        <div className="brand-mark">CV Forge</div>
-        <h1 className="login-title">Build a CV that opens doors</h1>
-        <p className="login-sub">
-          Optimized for students and early-career roles — live preview, templates, and Paystack checkout when you are ready to export.
-        </p>
-        <div className="login-actions">
+      <div className="login-container">
+        <div className="login-header">
+          <div className="login-logo">
+            <div className="login-logo-icon">CV</div>
+            CV Forge
+          </div>
+          <h1>Sign in to your account</h1>
+          <p>Build professional CVs with live preview and premium templates</p>
+        </div>
+        
+        <div className="login-card">
           <GoogleLogin
             onSuccess={async (cred) => {
               try {
                 await loginWithGoogle(cred.credential);
                 navigate(from, { replace: true });
               } catch (e) {
-                alert(e.message || 'Login failed');
+                addToast(e.message || 'Login failed', 'error');
               }
             }}
-            onError={() => alert('Google sign-in was interrupted')}
-            theme="filled_blue"
+            onError={() => addToast('Google sign-in was interrupted', 'error')}
+            theme="filled_black"
             size="large"
             text="continue_with"
-            shape="pill"
+            shape="rectangular"
+            width="100%"
           />
+          
+          <div className="divider">
+            <span>or</span>
+          </div>
+          
+          <div className="login-footer">
+            <p>
+              By continuing, you agree to our fair-use export rules (paid download window).
+            </p>
+            <p>
+              <Link to="/">← Back to home</Link>
+            </p>
+          </div>
         </div>
-        <p className="login-footnote">
-          {/* TODO: surface Terms / Privacy routes */}
-          By continuing you agree to fair-use export rules (paid download window).
-        </p>
       </div>
-      <div className="login-hero" aria-hidden />
     </div>
   );
 }
