@@ -199,8 +199,8 @@
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
-  --container-xl: 1280px;
-  --container-2xl: 1536px;
+  --container-xl: 1200px;
+  --container-2xl: 1400px;
   
   --grid-cols-1: repeat(1, minmax(0, 1fr));
   --grid-cols-2: repeat(2, minmax(0, 1fr));
@@ -229,12 +229,26 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
 }
 
 /* ========================================

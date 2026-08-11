@@ -8,7 +8,7 @@ export default function AppShell({ title, user, onLogout, actions, children }) {
         <div className="shell-header-inner">
           <div className="shell-brand">
             <Link to="/" className="brand-link">
-              <span className="logo-dot" />
+              <img src="/pen.png" alt="" className="logo-dot" />
               <strong>CV Forge</strong>
             </Link>
             <span className="shell-crumb">{title}</span>

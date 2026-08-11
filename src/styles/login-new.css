@@ -10,6 +10,8 @@
   justify-content: center;
   background: var(--bg-base);
   padding: var(--space-6);
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .login-container {

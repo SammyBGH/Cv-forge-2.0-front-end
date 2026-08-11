@@ -8,6 +8,8 @@
   display: flex;
   flex-direction: column;
   background: var(--bg-base);
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* ========================================
@@ -58,8 +60,7 @@
 .logo-dot {
   width: 24px;
   height: 24px;
-  background: var(--brand-primary);
-  border-radius: var(--radius-md);
+  object-fit: contain;
   flex-shrink: 0;
 }
 
