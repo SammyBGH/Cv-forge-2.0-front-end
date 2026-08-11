@@ -28,6 +28,7 @@
   position: sticky;
   top: 0;
   z-index: var(--z-30);
+  flex-wrap: wrap;
 }
 
 .ribbon-text {
@@ -35,6 +36,7 @@
   align-items: center;
   gap: var(--space-2);
   flex: 1;
+  min-width: 200px;
 }
 
 .ribbon-text strong {
@@ -59,6 +61,7 @@
 .ribbon-actions {
   display: flex;
   gap: var(--space-3);
+  flex-wrap: wrap;
 }
 
 .ribbon-actions .btn-secondary {
@@ -99,6 +102,62 @@
   box-shadow: var(--shadow-sm);
 }
 
+@media (max-width: 768px) {
+  .download-ribbon {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .ribbon-text {
+    min-width: 150px;
+  }
+
+  .ribbon-text strong {
+    font-size: var(--text-xs);
+  }
+
+  .ribbon-text span {
+    display: none;
+  }
+
+  .ribbon-actions {
+    gap: var(--space-2);
+  }
+
+  .ribbon-actions .btn-secondary,
+  .ribbon-actions .btn-primary {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .download-ribbon {
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .ribbon-text {
+    min-width: 100%;
+  }
+
+  .ribbon-text strong {
+    font-size: 11px;
+  }
+
+  .ribbon-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .ribbon-actions .btn-secondary,
+  .ribbon-actions .btn-primary {
+    flex: 1;
+    font-size: 11px;
+    padding: var(--space-2);
+  }
+}
+
 /* ========================================
    BUILDER TOPBAR
    Clean, functional, minimal
@@ -111,6 +170,7 @@
   padding: var(--space-4) var(--space-6);
   background: var(--bg-elevated);
   border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
 }
 
 .builder-back {
@@ -130,7 +190,8 @@
 
 .title-input {
   flex: 1;
-  min-width: 200px;
+  min-width: 120px;
+  max-width: 300px;
   border: none;
   background: transparent;
   font-size: var(--text-lg);
@@ -151,6 +212,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-4);
+  flex-wrap: wrap;
 }
 
 .inline-control {
@@ -249,6 +311,72 @@
   .builder-split {
     grid-template-columns: 1fr;
     overflow: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .builder-topbar {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .title-input {
+    font-size: var(--text-base);
+    min-width: 100px;
+    max-width: 200px;
+  }
+
+  .builder-topbar-right {
+    gap: var(--space-2);
+  }
+
+  .inline-control {
+    font-size: 10px;
+  }
+
+  .inline-control select {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+  }
+
+  .zoom-cluster {
+    padding: var(--space-1);
+  }
+
+  .zoom-label {
+    min-width: 40px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .builder-topbar {
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .builder-back {
+    font-size: var(--text-xs);
+  }
+
+  .title-input {
+    font-size: var(--text-sm);
+    min-width: 80px;
+    max-width: 150px;
+  }
+
+  .builder-topbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .inline-control {
+    display: none;
+  }
+
+  .zoom-cluster {
+    flex: 1;
+    justify-content: center;
   }
 }
 

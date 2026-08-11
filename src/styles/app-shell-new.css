@@ -129,20 +129,34 @@
 
 @media (max-width: 768px) {
   .shell-header-inner {
-    padding: 0 var(--space-4);
+    padding: 0 var(--space-3);
     height: 56px;
   }
 
   .shell-brand {
-    gap: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .brand-link {
+    font-size: var(--text-base);
+  }
+
+  .logo-dot {
+    width: 20px;
+    height: 20px;
   }
 
   .shell-crumb {
     display: none;
   }
 
+  .shell-right {
+    gap: var(--space-2);
+  }
+
   .shell-user {
-    padding: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    gap: var(--space-2);
   }
 
   .shell-name {
@@ -152,5 +166,65 @@
   .avatar {
     width: 28px;
     height: 28px;
+  }
+
+  .shell-user .btn-ghost {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .shell-header-inner {
+    padding: 0 var(--space-2);
+    height: 52px;
+  }
+
+  .shell-brand {
+    gap: var(--space-2);
+  }
+
+  .brand-link {
+    font-size: var(--text-sm);
+  }
+
+  .brand-link strong {
+    display: none;
+  }
+
+  .logo-dot {
+    width: 24px;
+    height: 24px;
+  }
+
+  .shell-right {
+    gap: var(--space-1);
+  }
+
+  .shell-user {
+    padding: var(--space-1);
+    background: transparent;
+    border: none;
+  }
+
+  .shell-user:hover {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .shell-user .btn-ghost {
+    display: none;
+  }
+
+  .shell-user::after {
+    content: '▼';
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin-left: var(--space-1);
   }
 }
