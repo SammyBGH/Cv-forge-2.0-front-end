@@ -420,3 +420,6 @@
 .animate-scale-in {
   animation: scaleIn var(--duration-200) var(--ease-out);
 }
+
+/* Shared controls */
+.btn{border-radius:0;font-size:12px;font-weight:600;letter-spacing:-.01em}.btn-primary{background:var(--brand-primary);border-color:var(--brand-primary);box-shadow:3px 3px 0 var(--accent-light)}.btn-primary:hover:not(:disabled){background:var(--brand-primary-light);border-color:var(--brand-primary-light);box-shadow:5px 5px 0 var(--accent-light);transform:translate(-1px,-1px)}.btn-secondary{background:transparent;border-color:var(--border-default)}.btn-secondary:hover:not(:disabled){background:var(--bg-elevated);border-color:var(--brand-primary)}.btn-ghost{font-size:11px}.input,.textarea,.select{border-radius:0;background:var(--bg-elevated);border-color:var(--border-default)}.input:focus,.textarea:focus,.select:focus{border-color:var(--accent);box-shadow:3px 3px 0 var(--accent-light)}.card{border-radius:0;box-shadow:none}

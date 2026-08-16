@@ -166,7 +166,7 @@ export default function BuilderWorkspace({ headerLeft }) {
             >
               <option value="modern-split">Modern split</option>
               <option value="minimal">Minimal</option>
-              <option value="accent-header">Accent header</option>
+              <option value="accent-header">Executive header</option>
             </select>
           </label>
           <label className="inline-control">

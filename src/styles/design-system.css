@@ -10,31 +10,31 @@
      ======================================== */
   
   /* Primary brand - Deep charcoal with warmth */
-  --brand-primary: #1a1a1a;
-  --brand-primary-light: #2d2d2d;
-  --brand-primary-dark: #0a0a0a;
+  --brand-primary: #1d2434;
+  --brand-primary-light: #313b50;
+  --brand-primary-dark: #121826;
   
   /* Accent - Electric indigo with personality */
-  --accent: #4f46e5;
-  --accent-soft: #818cf8;
-  --accent-light: #eef2ff;
-  --accent-dark: #3730a3;
+  --accent: #59621e;
+  --accent-soft: #96a34d;
+  --accent-light: #edf0d2;
+  --accent-dark: #3e4614;
   
   /* Secondary accent - Warm amber for energy */
   --accent-secondary: #f59e0b;
   --accent-secondary-light: #fef3c7;
   
   /* Neutral backgrounds */
-  --bg-base: #ffffff;
-  --bg-surface: #fafafa;
-  --bg-elevated: #ffffff;
-  --bg-subtle: #f4f4f5;
-  --bg-muted: #e4e4e7;
+  --bg-base: #f6f4ef;
+  --bg-surface: #efede6;
+  --bg-elevated: #fbfaf6;
+  --bg-subtle: #e7e4dc;
+  --bg-muted: #d9d5cb;
   
   /* Text hierarchy */
-  --text-primary: #09090b;
-  --text-secondary: #52525b;
-  --text-tertiary: #a1a1aa;
+  --text-primary: #1d2434;
+  --text-secondary: #697083;
+  --text-tertiary: #8b919e;
   --text-inverse: #ffffff;
   
   /* Semantic colors */
@@ -48,10 +48,10 @@
   --info-bg: #cffafe;
   
   /* Borders */
-  --border-subtle: #e4e4e7;
-  --border-default: #d4d4d8;
-  --border-strong: #a1a1aa;
-  --border-focus: #4f46e5;
+  --border-subtle: #dcd8ce;
+  --border-default: #c9c4b8;
+  --border-strong: #9c968a;
+  --border-focus: #59621e;
   
   /* ========================================
      TYPOGRAPHY
@@ -59,9 +59,9 @@
      ======================================== */
   
   /* Font families */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
-  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
   
   /* Font weights */
   --font-light: 300;

@@ -2,189 +2,80 @@ import { sectionByType, sortedSections } from './cvSelectors.js';
 import { formatEducationCredential } from '../../utils/educationDisplay.js';
 import '../../styles/preview.css';
 
-function themeVars(themeId, accent) {
-  if (themeId === 'slate') {
-    return {
-      bg: '#0f172a',
-      fg: '#e2e8f0',
-      muted: '#94a3b8',
-      card: '#111827',
-      accent: accent || '#38bdf8',
-    };
-  }
-  if (themeId === 'paper') {
-    return {
-      bg: '#fbf7ef',
-      fg: '#1c1917',
-      muted: '#78716c',
-      card: '#fffdf8',
-      accent: accent || '#b45309',
-    };
-  }
-  return {
-    bg: '#ffffff',
-    fg: '#0f172a',
-    muted: '#64748b',
-    card: '#f8fafc',
-    accent: accent || '#2563eb',
+function paletteFor(cv) {
+  const custom = /^#[0-9a-f]{6}$/i.test(cv?.customization?.accentColor || '') ? cv.customization.accentColor : null;
+  const themes = {
+    slate: { ink: '#1f2937', muted: '#5d6875', paper: '#ffffff', surface: '#eef2f5', accent: '#36556d' },
+    paper: { ink: '#292724', muted: '#6d6861', paper: '#fffdf9', surface: '#f4eee5', accent: '#76513a' },
+    light: { ink: '#1f2937', muted: '#667085', paper: '#ffffff', surface: '#f1f4f5', accent: '#254f6d' },
   };
+  const base = themes[cv?.themeId] || themes.light;
+  return { ...base, accent: custom || base.accent };
+}
+
+function Contact({ personal, compact = false }) {
+  const items = [personal.email, personal.phone, personal.location, personal.website, personal.linkedin].filter(Boolean);
+  return <div className={`cv-contact ${compact ? 'cv-contact-inline' : ''}`}>{items.map((item) => <span key={item}>{item}</span>)}</div>;
 }
 
 export default function CVPreview({ cv }) {
-  const accent = cv?.customization?.accentColor;
-  const t = themeVars(cv.themeId, accent);
-  const layoutClass = cv.layoutId === 'single' ? 'layout-single' : 'layout-two';
-  const blocks = sortedSections(cv).filter((s) => s.type !== 'personal');
-
   const personal = sectionByType(cv, 'personal')?.data || {};
+  const blocks = sortedSections(cv).filter((section) => section.type !== 'personal');
+  const palette = paletteFor(cv);
+  const template = cv?.templateId || 'modern-split';
 
   return (
-    <div className="cv-sheet" style={{ background: t.bg, color: t.fg }}>
-      <div className={`cv-inner ${layoutClass} tmpl-${cv.templateId}`}>
-        <aside className="cv-sidebar" style={{ background: t.card, borderColor: t.accent }}>
-          <header className="cv-name-block">
-            <h1>{personal.fullName || 'Your name'}</h1>
-            <p className="cv-headline" style={{ color: t.muted }}>
-              {personal.headline || 'Professional headline'}
-            </p>
+    <article
+      className={`cv-sheet tmpl-${template} ${cv?.layoutId === 'single' ? 'layout-single' : 'layout-two'}`}
+      style={{ '--cv-ink': palette.ink, '--cv-muted': palette.muted, '--cv-paper': palette.paper, '--cv-surface': palette.surface, '--cv-accent': palette.accent }}
+    >
+      {template === 'minimal' ? (
+        <div className="cv-minimal">
+          <header className="cv-minimal-header">
+            <div><h1>{personal.fullName || 'Your name'}</h1><p>{personal.headline || 'Professional headline'}</p></div>
+            <Contact personal={personal} compact />
           </header>
-          <div className="cv-contact" style={{ color: t.muted }}>
-            {personal.email ? <div>{personal.email}</div> : null}
-            {personal.phone ? <div>{personal.phone}</div> : null}
-            {personal.location ? <div>{personal.location}</div> : null}
-            {personal.website ? <div>{personal.website}</div> : null}
-            {personal.linkedin ? <div>{personal.linkedin}</div> : null}
-          </div>
-        </aside>
-
-        <main className="cv-main">
-          {blocks.map((s) => (
-            <PreviewBlock key={s.key} section={s} accent={t.accent} muted={t.muted} fg={t.fg} />
-          ))}
-        </main>
-      </div>
-    </div>
+          <main className="cv-main"><Sections blocks={blocks} /></main>
+        </div>
+      ) : template === 'accent-header' ? (
+        <div className="cv-executive">
+          <header className="cv-executive-header"><h1>{personal.fullName || 'Your name'}</h1><p>{personal.headline || 'Professional headline'}</p></header>
+          <div className="cv-executive-body"><aside><Contact personal={personal} /><span className="cv-side-rule" /></aside><main className="cv-main"><Sections blocks={blocks} /></main></div>
+        </div>
+      ) : (
+        <div className="cv-split">
+          <aside className="cv-sidebar"><header><h1>{personal.fullName || 'Your name'}</h1><p>{personal.headline || 'Professional headline'}</p></header><span className="cv-sidebar-rule" /><Contact personal={personal} /></aside>
+          <main className="cv-main"><Sections blocks={blocks} /></main>
+        </div>
+      )}
+    </article>
   );
 }
 
-function PreviewBlock({ section, accent, muted, fg }) {
-  switch (section.type) {
-    case 'summary':
-      return (
-        <section className="cv-block">
-          <h2 style={{ color: accent }}>Summary</h2>
-          <p className="cv-prose" style={{ color: muted }}>
-            {(section.data?.html || '').replace(/\n/g, ' ') || '…'}
-          </p>
-        </section>
-      );
-    case 'experience': {
-      const items = section.data?.items || [];
-      return (
-        <section className="cv-block">
-          <h2 style={{ color: accent }}>Experience</h2>
-          <ul className="cv-timeline">
-            {items.map((it, i) => (
-              <li key={i}>
-                <div className="cv-row-title">
-                  <strong>{it.role || 'Role'}</strong>
-                  <span className="cv-muted">{it.period}</span>
-                </div>
-                <div className="cv-muted">{it.company}</div>
-                <pre className="cv-bullets">{it.bullets}</pre>
-              </li>
-            ))}
-          </ul>
-        </section>
-      );
-    }
-    case 'education': {
-      const items = section.data?.items || [];
-      return (
-        <section className="cv-block">
-          <h2 style={{ color: accent }}>Education</h2>
-          <ul className="cv-timeline">
-            {items.map((it, i) => (
-              <li key={i}>
-                <div className="cv-row-title">
-                  <strong>{it.school}</strong>
-                  <span className="cv-muted">{it.period}</span>
-                </div>
-                <div className="cv-muted">{formatEducationCredential(it)}</div>
-                <p className="cv-muted">{it.detail}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      );
-    }
-    case 'skills': {
-      const items = section.data?.items || [];
-      if (!items.length) return null;
-      return (
-        <section className="cv-block cv-block-skills">
-          <h2 style={{ color: accent }}>Skills</h2>
-          <ul className="cv-skills-main">
-            {items.map((it, i) => (
-              <li key={i}>
-                <strong style={{ color: fg }}>{it.name}</strong>
-                {it.level ? <span style={{ color: muted }}> · {it.level}</span> : null}
-              </li>
-            ))}
-          </ul>
-        </section>
-      );
-    }
-    case 'projects': {
-      const items = section.data?.items || [];
-      return (
-        <section className="cv-block">
-          <h2 style={{ color: accent }}>Projects & highlights</h2>
-          <ul className="cv-timeline">
-            {items.map((it, i) => (
-              <li key={i}>
-                <div className="cv-row-title">
-                  <strong>{it.name}</strong>
-                </div>
-                {it.stack ? (
-                  <div className="cv-muted">
-                    <span className="cv-inline-label">Tools & methods: </span>
-                    {it.stack}
-                  </div>
-                ) : null}
-                {it.link ? (
-                  <div className="cv-muted">
-                    <span className="cv-inline-label">Link: </span>
-                    {it.link}
-                  </div>
-                ) : null}
-                <p className="cv-muted">{it.detail}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      );
-    }
-    case 'certifications': {
-      const items = section.data?.items || [];
-      return (
-        <section className="cv-block">
-          <h2 style={{ color: accent }}>Certificates & licenses</h2>
-          <ul className="cv-timeline">
-            {items.map((it, i) => (
-              <li key={i}>
-                <div className="cv-row-title">
-                  <strong>{it.name}</strong>
-                  <span className="cv-muted">{it.year}</span>
-                </div>
-                <div className="cv-muted">{it.issuer}</div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      );
-    }
-    default:
-      return null;
-  }
+function Sections({ blocks }) {
+  return blocks.map((section) => <PreviewBlock key={section.key} section={section} />);
+}
+
+function PreviewBlock({ section }) {
+  const items = section.data?.items || [];
+  const title = { summary: 'Profile', experience: 'Experience', education: 'Education', skills: 'Skills', projects: 'Projects', certifications: 'Certificates' }[section.type];
+  if (!title || (section.type !== 'summary' && !items.length)) return null;
+  return (
+    <section className={`cv-block cv-block-${section.type}`}>
+      <h2>{title}</h2>
+      {section.type === 'summary' ? <p className="cv-prose">{(section.data?.html || '').replace(/\n/g, ' ') || 'Add a short professional summary.'}</p> : null}
+      {section.type === 'skills' ? <ul className="cv-skills-main">{items.map((item, i) => <li key={i}><strong>{item.name || 'Skill'}</strong>{item.level ? <span>{item.level}</span> : null}</li>)}</ul> : null}
+      {['experience', 'education', 'projects', 'certifications'].includes(section.type) ? <ul className="cv-timeline">{items.map((item, i) => <Item key={i} type={section.type} item={item} />)}</ul> : null}
+    </section>
+  );
+}
+
+function Item({ type, item }) {
+  const config = {
+    experience: { primary: item.role || 'Role', secondary: item.company, date: item.period, detail: item.bullets },
+    education: { primary: item.school || 'School', secondary: formatEducationCredential(item), date: item.period, detail: item.detail },
+    projects: { primary: item.name || 'Project', secondary: item.stack, date: item.link, detail: item.detail },
+    certifications: { primary: item.name || 'Certificate', secondary: item.issuer, date: item.year },
+  }[type];
+  return <li><div className="cv-row-title"><strong>{config.primary}</strong>{config.date ? <span>{config.date}</span> : null}</div>{config.secondary ? <p className="cv-item-subtitle">{config.secondary}</p> : null}{config.detail ? <p className="cv-item-detail">{config.detail}</p> : null}</li>;
 }

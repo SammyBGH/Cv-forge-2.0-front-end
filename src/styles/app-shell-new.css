@@ -12,6 +12,14 @@
   width: 100%;
 }
 
+/* CV Forge workspace skin */
+.shell { background:var(--bg-base); }
+.shell-header { background:rgba(246,244,239,.9); border-color:var(--border-subtle); box-shadow:none; backdrop-filter:blur(16px); }
+.shell-header-inner { max-width:1240px; height:76px; }
+.shell-brand { gap:22px; }.brand-link { gap:10px; font-family:var(--font-sans); font-size:16px; letter-spacing:-.04em; }.shell-mark { width:23px; height:23px; display:flex; align-items:flex-end; gap:3px; padding:4px; background:var(--brand-primary); transform:rotate(-4deg); }.shell-mark i { display:block; width:3px; background:#dbe864; }.shell-mark i:nth-child(1){height:7px}.shell-mark i:nth-child(2){height:12px}.shell-mark i:nth-child(3){height:16px}
+.shell-crumb { padding-left:22px; color:var(--text-secondary); font:500 10px 'DM Mono',monospace; letter-spacing:.08em; text-transform:uppercase; }.shell-right { gap:12px; }.shell-user { padding:4px 5px 4px 9px; border-radius:0; border-color:var(--border-subtle); background:transparent; }.shell-user:hover { background:var(--bg-elevated); }.avatar { width:27px; height:27px; }.shell-name { font-size:12px; }.shell-signout { font:500 10px 'DM Mono',monospace; text-transform:uppercase; letter-spacing:.04em; }
+@media (max-width:768px){.shell-header-inner{height:64px}.shell-mark{width:21px;height:21px}.shell-user{border:none;padding:0}.shell-signout{display:none}}
+
 /* ========================================
    HEADER
    Minimal, elegant, purposeful
@@ -228,3 +236,8 @@
     margin-left: var(--space-1);
   }
 }
+
+/* Final shared-shell overrides */
+.shell-header { background:rgba(246,244,239,.9); border-color:var(--border-subtle); box-shadow:none; backdrop-filter:blur(16px); }
+.shell-header-inner { max-width:1240px; height:76px; }.shell-brand{gap:22px}.brand-link{gap:10px;font-size:16px;letter-spacing:-.04em}.shell-mark{width:23px;height:23px;display:flex;align-items:flex-end;gap:3px;padding:4px;background:var(--brand-primary);transform:rotate(-4deg)}.shell-mark i{display:block;width:3px;background:#dbe864}.shell-mark i:nth-child(1){height:7px}.shell-mark i:nth-child(2){height:12px}.shell-mark i:nth-child(3){height:16px}.shell-crumb{padding-left:22px;color:var(--text-secondary);font:500 10px 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase}.shell-user{padding:4px 5px 4px 9px;border-radius:0;background:transparent}.shell-user:hover{background:var(--bg-elevated)}.avatar{width:27px;height:27px}.shell-name{font-size:12px}.shell-signout{font:500 10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+@media(max-width:768px){.shell-header-inner{height:64px}.shell-mark{width:21px;height:21px}.shell-user{border:0;padding:0}.shell-signout{display:none}.shell-user::after{display:none}}

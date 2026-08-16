@@ -16,6 +16,8 @@
   animation: fadeIn var(--duration-200) var(--ease-out);
 }
 
+.modal-overlay{background:rgba(29,36,52,.52);backdrop-filter:blur(8px)}.modal-content{border-radius:0;background:var(--bg-elevated);box-shadow:10px 12px 0 rgba(29,36,52,.2)}.modal-header,.modal-body,.modal-footer{padding:24px}.modal-title{font-family:var(--font-display);font-size:25px;letter-spacing:-.05em}.modal-close{border-radius:0}.modal-footer{background:var(--bg-base)}
+
 .modal-content {
   background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);

@@ -86,7 +86,8 @@ export default function DashboardPage() {
       <section className="dash-wrap">
         <header className="dash-header">
           <div>
-            <h2>Your CVs</h2>
+            <span className="dash-eyebrow">Your workspace</span>
+            <h2>Documents in progress.</h2>
             <p>Autosaved edits · Pay to export · 25-day re-download window</p>
           </div>
           <div className="dash-header-actions">

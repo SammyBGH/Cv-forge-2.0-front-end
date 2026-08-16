@@ -1,327 +1,155 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
-import { useState, useEffect } from 'react';
-import '../styles/design-system.css';
-import '../styles/components.css';
 import '../styles/homepage-new.css';
-import '../styles/animations.css';
+
+const Arrow = () => (
+  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3l5 5-5 5" /></svg>
+);
+
+const Check = () => (
+  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8.25 3.05 3L13 4.75" /></svg>
+);
 
 export default function HomePage() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const destination = user ? '/dashboard' : '/login';
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
-    <div className="homepage">
-      {/* Navigation */}
-      <nav className={`home-nav ${scrolled ? 'scrolled' : ''}`}>
-        <div className="nav-container">
-          <Link to="/" className="nav-logo">
-            <img src="/pen.png" alt="" className="nav-logo-icon" />
-            CV Forge
+    <div className="forge-home">
+      <nav className={`forge-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
+        <div className="forge-nav-inner">
+          <Link to="/" className="forge-wordmark" aria-label="CV Forge home">
+            <span className="wordmark-mark"><i /><i /><i /></span>
+            <span>CV Forge</span>
           </Link>
-          <div className="nav-links">
-            <a href="#features" className="nav-link">How it works</a>
-            <a href="#testimonials" className="nav-link">Testimonials</a>
-            <a href="#contact" className="nav-link">Contact</a>
+          <div className="forge-nav-links">
+            <a href="#process">Process</a>
+            <a href="#details">Details</a>
+            <a href="#templates">Templates</a>
           </div>
-          <Link to="/login" className="nav-cta hover-lift">
-            Get Started
+          <Link to={destination} className="forge-nav-action">
+            {user ? 'Open workspace' : 'Start for free'} <Arrow />
           </Link>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-content stagger-children">
-          <div className="hero-eyebrow">
-            Professional CV Builder
-          </div>
-          
-          <h1 className="hero-title">
-            Build a CV that
-            <span className="highlight"> opens doors</span>
-          </h1>
-          
-          <p className="hero-description">
-            Optimized for students and early-career professionals. 
-            Create stunning CVs with live preview, professional templates, 
-            and seamless Paystack checkout when you're ready to export.
-          </p>
-          
-          <div className="hero-actions">
-            <Link to="/login" className="hero-primary-cta hover-lift">
-              Start Building Free
-            </Link>
-            <Link to="/login" className="hero-secondary-cta hover-lift">
-              Sign In
-            </Link>
-          </div>
-          
-          <div className="hero-trust">
-            <div className="trust-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Free to build
+      <main>
+        <section className="forge-hero">
+          <div className="hero-grain" />
+          <div className="forge-hero-inner">
+            <div className="hero-copy">
+              <p className="section-kicker reveal-1"><span /> A considered way to apply</p>
+              <h1 className="reveal-2">Your experience,<br /><em>made legible.</em></h1>
+              <p className="hero-intro reveal-3">
+                CV Forge gives your work the structure and polish it deserves—without turning your story into a template.
+              </p>
+              <div className="hero-actions reveal-4">
+                <Link to={destination} className="button button-dark">
+                  {user ? 'Go to dashboard' : 'Build your CV'} <Arrow />
+                </Link>
+                <a className="text-action" href="#process">See how it works <Arrow /></a>
+              </div>
+              <div className="hero-notes reveal-4">
+                <span><Check /> No credit card to start</span>
+                <span><Check /> Export when you are ready</span>
+              </div>
             </div>
-            <div className="trust-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Pay to export
-            </div>
-            <div className="trust-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Professional templates
-            </div>
-          </div>
-        </div>
-        
-        <div className="hero-visual scale-in">
-          <div className="cv-showcase">
-            <img src="/cv.png" alt="CV Preview" className="cv-showcase-image" />
-            <div className="float-element float-element-3">
-              <img src="/pen.png" alt="" className="float-element-image" />
-            </div>
-          </div>
-          
-          <div className="float-element float-element-1">
-            <div className="cv-skeleton-line short" />
-          </div>
-          <div className="float-element float-element-2">
-            <div className="cv-skeleton-line medium" />
-          </div>
-        </div>
-      </section>
 
-      {/* Features Section */}
-      <section id="features" className="features">
-        <div className="features-container">
-          <div className="features-header">
-            <h2>How it works</h2>
-            <p>Create your professional CV in three simple steps</p>
-          </div>
-          
-          <div className="features-grid stagger-children">
-            <div className="feature-card hover-lift">
-              <div className="feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                </svg>
-              </div>
-              <h3>1. Sign Up Free</h3>
-              <p>Create your account with Google in seconds. No credit card required to get started.</p>
-            </div>
-            
-            <div className="feature-card hover-lift">
-              <div className="feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </div>
-              <h3>2. Build Your CV</h3>
-              <p>Fill in your details using our smart forms with helpful suggestions. See changes instantly with live preview.</p>
-            </div>
-            
-            <div className="feature-card hover-lift">
-              <div className="feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3>3. Export & Share</h3>
-              <p>Pay a small fee to unlock PDF export with 25-day re-download access. Share your CV with confidence.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Detail Section */}
-      <section className="features-detail">
-        <div className="features-container">
-          <div className="features-header">
-            <h2>Why choose CV Forge?</h2>
-            <p>Everything you need to create a standout CV</p>
-          </div>
-          
-          <div className="features-grid stagger-children">
-            <div className="feature-card hover-lift">
-              <div className="feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                </svg>
-              </div>
-              <h3>Professional Templates</h3>
-              <p>Choose from carefully designed templates optimized for ATS systems and human recruiters.</p>
-            </div>
-            
-            <div className="feature-card hover-lift">
-              <div className="feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                </svg>
-              </div>
-              <h3>Multi-Language Support</h3>
-              <p>Create translated versions of your CV for international opportunities.</p>
-            </div>
-            
-            <div className="feature-card hover-lift">
-              <div className="feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3>Autosave</h3>
-              <p>Never lose your work. Every edit is automatically saved as you go.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" className="testimonials">
-        <div className="features-container">
-          <div className="features-header">
-            <h2>What our users say</h2>
-            <p>Join thousands of students and professionals who've landed their dream jobs</p>
-          </div>
-          
-          <div className="testimonials-grid stagger-children">
-            <div className="testimonial-card hover-lift">
-              <div className="testimonial-content">
-                <p>"CV Forge made it so easy to create a professional CV. I got my dream job within 2 weeks!"</p>
-              </div>
-              <div className="testimonial-author">
-                <div className="author-avatar">SA</div>
-                <div className="author-info">
-                  <strong>Sarah A.</strong>
-                  <span>Marketing Graduate</span>
+            <div className="resume-stage reveal-stage" aria-label="A preview of a professionally formatted CV">
+              <div className="stage-caption">Live document view <span>01 — 04</span></div>
+              <div className="resume-sheet">
+                <div className="sheet-topline" />
+                <div className="sheet-name">Amara<br />Mensah</div>
+                <div className="sheet-role">Product designer <span>Accra, Ghana</span></div>
+                <div className="sheet-columns">
+                  <div>
+                    <p className="sheet-label">Profile</p>
+                    <p className="sheet-copy">Designing digital products that make complex tasks feel natural.</p>
+                    <p className="sheet-label sheet-label-space">Experience</p>
+                    <div className="sheet-entry"><b>Senior Product Designer</b><span>Northstar — 2022–now</span><i /></div>
+                    <div className="sheet-entry"><b>Product Designer</b><span>Studio A — 2019–2022</span><i /></div>
+                  </div>
+                  <div className="sheet-sidebar">
+                    <p className="sheet-label">Selected skills</p>
+                    <p>Product strategy<br />Systems thinking<br />Interface design<br />Research synthesis</p>
+                    <p className="sheet-label sheet-label-space">Education</p>
+                    <p>BFA, Communication Design<br /><small>2015–2019</small></p>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="testimonial-card hover-lift">
-              <div className="testimonial-content">
-                <p>"The live preview feature is amazing. I could see exactly what my CV would look like as I edited."</p>
-              </div>
-              <div className="testimonial-author">
-                <div className="author-avatar">JM</div>
-                <div className="author-info">
-                  <strong>James M.</strong>
-                  <span>Software Engineer</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="testimonial-card hover-lift">
-              <div className="testimonial-content">
-                <p>"Simple, clean, and professional. The templates are perfect for entry-level positions."</p>
-              </div>
-              <div className="testimonial-author">
-                <div className="author-avatar">EO</div>
-                <div className="author-info">
-                  <strong>Emily O.</strong>
-                  <span>Business Student</span>
-                </div>
-              </div>
+              <div className="stage-card stage-card-top"><span className="status-dot" /> Changes saved</div>
+              <div className="stage-card stage-card-bottom"><span>CV</span> Ready to export <Arrow /></div>
             </div>
           </div>
-        </div>
-      </section>
+          <div className="hero-rule"><span>Scroll to explore</span><i /></div>
+        </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="contact">
-        <div className="contact-container">
-          <div className="contact-header">
-            <h2>Get in touch</h2>
-            <p>Have questions? We'd love to hear from you.</p>
-          </div>
-          
-          <div className="contact-content">
-            <div className="contact-info">
-              <div className="contact-item">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span>support@cvforge.com</span>
-              </div>
-              <div className="contact-item">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span>Available 24/7</span>
-              </div>
-            </div>
-            
-            <Link to="/login" className="contact-cta hover-lift">
-              Start Building Your CV
-            </Link>
-          </div>
-        </div>
-      </section>
+        <section className="proof-band" aria-label="CV Forge principles">
+          <p>Clear structure</p><i />
+          <p>Live editing</p><i />
+          <p>Designed for real applications</p>
+        </section>
 
-      {/* CTA Section */}
-      <section className="cta">
-        <div className="cta-container">
-          <h2>Ready to build your CV?</h2>
-          <p>Join thousands of students and professionals who have already created their perfect CV with CV Forge.</p>
-          <Link to="/login" className="cta-button hover-lift">
-            Get Started Free
-          </Link>
-        </div>
-      </section>
+        <section className="process-section" id="process">
+          <div className="section-heading">
+            <p className="section-kicker"><span /> The process</p>
+            <h2>A quieter path from<br />draft to <em>done.</em></h2>
+          </div>
+          <div className="process-list">
+            <article className="process-item">
+              <span className="process-number">01</span>
+              <div><h3>Start with what you have</h3><p>Bring the details, bullet points, and half-finished drafts. The builder gives them a useful home.</p></div>
+              <span className="process-mark">A</span>
+            </article>
+            <article className="process-item">
+              <span className="process-number">02</span>
+              <div><h3>Shape it while you see it</h3><p>Every edit is reflected in a live preview, so hierarchy, spacing, and story stay in view.</p></div>
+              <span className="process-mark">B</span>
+            </article>
+            <article className="process-item">
+              <span className="process-number">03</span>
+              <div><h3>Leave with a document you own</h3><p>Choose a polished layout, export a PDF, and return to your work whenever you need it.</p></div>
+              <span className="process-mark">C</span>
+            </article>
+          </div>
+        </section>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-container">
-          <div className="footer-brand">
-            <img src="/pen.png" alt="" className="footer-logo-icon" />
-            <div>
-              <strong>CV Forge</strong>
-              <p>Build professional CVs that open doors</p>
-            </div>
+        <section className="details-section" id="details">
+          <div className="details-intro">
+            <p className="section-kicker"><span /> Built for the work behind the work</p>
+            <h2>Small decisions.<br /><em>Serious difference.</em></h2>
           </div>
-          
-          <div className="footer-links-section">
-            <div className="footer-link-group">
-              <h4>Product</h4>
-              <a href="#features">How it works</a>
-              <a href="#testimonials">Testimonials</a>
-              <a href="#contact">Contact</a>
-            </div>
-            
-            <div className="footer-link-group">
-              <h4>Company</h4>
-              <a href="#">About</a>
-              <a href="#">Privacy</a>
-              <a href="#">Terms</a>
-            </div>
-            
-            <div className="footer-link-group">
-              <h4>Connect</h4>
-              <a href="#">Twitter</a>
-              <a href="#">LinkedIn</a>
-              <a href="#">Instagram</a>
-            </div>
+          <div className="detail-grid">
+            <article className="detail-card detail-card-dark"><span className="detail-index">01</span><h3>Autosave that stays out of your way.</h3><p>Your edits are saved as you build, so momentum does not depend on a save button.</p><div className="save-indicator"><span /> All changes saved</div></article>
+            <article className="detail-card"><span className="detail-index">02</span><h3>Preview with perspective.</h3><p>See the finished page as you work, not after you have filled out a long form.</p><div className="mini-layout"><i /><i /><i /><i /></div></article>
+            <article className="detail-card detail-card-wide" id="templates"><span className="detail-index">03</span><div><h3>Templates with restraint.</h3><p>Thoughtful document layouts put your experience first and give recruiters a clearer read.</p></div><div className="template-lines"><i /><i /><i /><i /><i /></div></article>
           </div>
-        </div>
-        
-        <div className="footer-bottom">
-          <p>&copy; 2026 CV Forge. All rights reserved.</p>
-        </div>
+        </section>
+
+        <section className="closing-section">
+          <div className="closing-orbit orbit-one" /><div className="closing-orbit orbit-two" />
+          <div className="closing-content">
+            <p className="section-kicker"><span /> Your next application</p>
+            <h2>Make the first<br />page count.</h2>
+            <p>Start with a free workspace. Take your time. Export only when the document feels like yours.</p>
+            <Link to={destination} className="button button-light">{user ? 'Return to workspace' : 'Start building'} <Arrow /></Link>
+          </div>
+        </section>
+      </main>
+
+      <footer className="forge-footer">
+        <Link to="/" className="forge-wordmark"><span className="wordmark-mark"><i /><i /><i /></span><span>CV Forge</span></Link>
+        <p>For work worth reading.</p>
+        <span>© 2026 CV Forge</span>
       </footer>
     </div>
   );

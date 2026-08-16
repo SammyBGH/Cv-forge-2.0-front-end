@@ -20,12 +20,13 @@ export default function LoginPage() {
     <div className="login-page">
       <div className="login-container">
         <div className="login-header">
-          <div className="login-logo">
-            <div className="login-logo-icon">CV</div>
+          <Link to="/" className="login-logo">
+            <span className="login-logo-icon" aria-hidden="true"><i /><i /><i /></span>
             CV Forge
-          </div>
-          <h1>Sign in to your account</h1>
-          <p>Build professional CVs with live preview and premium templates</p>
+          </Link>
+          <p className="login-kicker">Your application workspace</p>
+          <h1>Make the first page count.</h1>
+          <p>Sign in to continue shaping a CV that reads with clarity and confidence.</p>
         </div>
         
         <div className="login-card">
@@ -47,12 +48,12 @@ export default function LoginPage() {
           />
           
           <div className="divider">
-            <span>or</span>
+            <span>secure sign-in</span>
           </div>
           
           <div className="login-footer">
             <p>
-              By continuing, you agree to our fair-use export rules (paid download window).
+              Your work stays available in your workspace. PDF export is unlocked when you are ready.
             </p>
             <p>
               <Link to="/">← Back to home</Link>

@@ -49,6 +49,8 @@ export default function PaymentCallbackPage() {
   return (
     <div className="pay-callback">
       <div className="pay-callback-card">
+        <div className={`pay-status-mark status-${status}`} aria-hidden="true"><span /></div>
+        <p className="pay-kicker">CV Forge · Payment status</p>
         <h1>{status === 'ok' ? 'Success' : status === 'error' ? 'Something went wrong' : 'Processing'}</h1>
         <p>{message}</p>
         <Link className="btn-secondary" to="/dashboard">
