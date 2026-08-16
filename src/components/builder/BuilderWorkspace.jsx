@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { pdf } from '@react-pdf/renderer';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useCVBuilder } from '../../context/CVBuilderContext.jsx';
@@ -43,6 +43,9 @@ export default function BuilderWorkspace({ headerLeft }) {
   const [payBusy, setPayBusy] = useState(false);
   const [translateLang, setTranslateLang] = useState('fr');
   const [translateOther, setTranslateOther] = useState('');
+  const [showFloatingDownload, setShowFloatingDownload] = useState(false);
+  
+  const downloadRibbonRef = useRef(null);
 
   const sortedSections = useMemo(() => {
     if (!cv?.sections) return [];
@@ -64,6 +67,36 @@ export default function BuilderWorkspace({ headerLeft }) {
     const id = setInterval(refreshDownload, 30_000);
     return () => clearInterval(id);
   }, [refreshDownload]);
+
+  // Scroll-based detection for floating download button
+  useEffect(() => {
+    const handleScroll = () => {
+      const ribbon = downloadRibbonRef.current;
+      if (!ribbon) return;
+      
+      const rect = ribbon.getBoundingClientRect();
+      const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+      setShowFloatingDownload(!isVisible);
+    };
+
+    // Initial check
+    handleScroll();
+
+    // Add scroll listener with throttle
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', throttledScroll);
+    return () => window.removeEventListener('scroll', throttledScroll);
+  }, []);
 
   async function startCheckout(kind, extra = {}) {
     if (!cv?._id) return;
@@ -143,6 +176,7 @@ export default function BuilderWorkspace({ headerLeft }) {
   return (
     <div className="builder-shell">
       <DownloadRibbon
+        ref={downloadRibbonRef}
         status={downloadStatus}
         onPay={() => startCheckout('download')}
         payBusy={payBusy}
@@ -303,6 +337,21 @@ export default function BuilderWorkspace({ headerLeft }) {
             <CVPreview cv={cv} />
           </div>
         </section>
+      </div>
+
+      {/* Floating download button - appears when ribbon is scrolled out of view */}
+      <div className={`floating-download ${showFloatingDownload ? 'is-visible' : ''}`}>
+        <button
+          type="button"
+          className="floating-download-btn"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Scroll to download options"
+          title="Scroll to download options"
+        >
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M8 3v8M4 9l4 4 4-4M3 13h10" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
       </div>
     </div>
   );

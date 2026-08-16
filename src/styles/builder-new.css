@@ -159,6 +159,97 @@
 }
 
 /* ========================================
+   FLOATING DOWNLOAD BUTTON
+   Scroll-aware floating action
+   ======================================== */
+
+.floating-download {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.floating-download.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.floating-download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: #1d2434;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.floating-download-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.floating-download-btn:focus-visible {
+  outline: 2px solid #dbe864;
+  outline-offset: 2px;
+}
+
+.floating-download-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 768px) {
+  .floating-download {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .floating-download-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .floating-download-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-download {
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .floating-download-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .floating-download-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ========================================
    BUILDER TOPBAR
    Clean, functional, minimal
    ======================================== */

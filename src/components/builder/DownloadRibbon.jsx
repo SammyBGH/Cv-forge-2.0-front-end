@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, forwardRef } from 'react';
 
 function formatRemaining(seconds) {
   const d = Math.floor(seconds / 86400);
@@ -10,14 +10,14 @@ function formatRemaining(seconds) {
   return `${m}m ${s}s`;
 }
 
-export default function DownloadRibbon({ status, onPay, payBusy, onExport }) {
+const DownloadRibbon = forwardRef(({ status, onPay, payBusy, onExport }, ref) => {
   const chip = useMemo(() => {
     if (!status?.allowed) return { tone: 'warn', label: 'Export locked — checkout required' };
     return { tone: 'ok', label: `Free re-download window · ${formatRemaining(status.secondsRemaining)} left` };
   }, [status]);
 
   return (
-    <div className={`download-ribbon ribbon-${chip.tone}`}>
+    <div ref={ref} className={`download-ribbon ribbon-${chip.tone}`}>
       <div className="ribbon-text">
         <strong>{chip.label}</strong>
         {status?.validUntil ? (
@@ -34,4 +34,8 @@ export default function DownloadRibbon({ status, onPay, payBusy, onExport }) {
       </div>
     </div>
   );
-}
+});
+
+DownloadRibbon.displayName = 'DownloadRibbon';
+
+export default DownloadRibbon;

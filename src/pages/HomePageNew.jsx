@@ -147,8 +147,33 @@ export default function HomePage() {
       </main>
 
       <footer className="forge-footer">
-        <Link to="/" className="forge-wordmark"><span className="wordmark-mark"><i /><i /><i /></span><span>CV Forge</span></Link>
-        <p>For work worth reading.</p>
+        <div className="forge-footer-inner">
+          <div className="forge-footer-brand">
+            <Link to="/" className="forge-wordmark"><span className="wordmark-mark"><i /><i /><i /></span><span>CV Forge</span></Link>
+            <p>For work worth reading.</p>
+          </div>
+          
+          <div className="forge-footer-links">
+            <div className="footer-column">
+              <h4>Product</h4>
+              <a href="#process">How It Works</a>
+              <a href="#templates">Templates</a>
+            </div>
+            
+            <div className="footer-column">
+              <h4>Company</h4>
+              <Link to="/about">About</Link>
+              <Link to="/contact">Contact</Link>
+            </div>
+            
+            <div className="footer-column">
+              <h4>Legal</h4>
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/terms">Terms of Service</Link>
+              <Link to="/refund-policy">Refund Policy</Link>
+            </div>
+          </div>
+        </div>
         <span>© 2026 CV Forge</span>
       </footer>
     </div>
