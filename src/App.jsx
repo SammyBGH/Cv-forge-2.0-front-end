@@ -1,4 +1,7 @@
+
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
+
 import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import BuilderPage from './pages/BuilderPage.jsx';
@@ -14,22 +17,26 @@ import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/payments/callback" element={<PaymentCallbackPage />} />
-      <Route path="/privacy" element={<PrivacyPage />} />
-      <Route path="/terms" element={<TermsPage />} />
-      <Route path="/refund-policy" element={<RefundPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/about" element={<AboutPage />} />
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/payments/callback" element={<PaymentCallbackPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/refund-policy" element={<RefundPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/about" element={<AboutPage />} />
 
-      <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/builder/:cvId" element={<BuilderPage />} />
-      </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/builder/:cvId" element={<BuilderPage />} />
+        </Route>
 
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+
+      <Analytics />
+    </>
   );
 }
