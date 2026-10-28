@@ -3,6 +3,13 @@ const TOKEN_KEY = 'cvforge_token';
 // If VITE_API_URL is unset (e.g. standard local dev using Vite proxy), use relative path
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
+// Hosted API instances can drop a connection while restarting or waking from idle.
+// Idempotent (GET) requests are retried so a momentary blip does not leave the UI
+// showing the wrong state.
+const REQUEST_TIMEOUT_MS = 20000;
+const RETRY_DELAYS_MS = [700, 2000];
+const RETRYABLE_STATUS = new Set([502, 503, 504]);
+
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
@@ -10,6 +17,18 @@ export function getToken() {
 export function setToken(token) {
   if (token) localStorage.setItem(TOKEN_KEY, token);
   else localStorage.removeItem(TOKEN_KEY);
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function fetchWithTimeout(url, options) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function request(path, options = {}) {
@@ -28,11 +47,35 @@ async function request(path, options = {}) {
       : options.body;
 
   const url = `${API_BASE}/api${path}`;
-  const res = await fetch(url, {
-    ...options,
-    headers,
-    body,
-  });
+  const retryable = !options.method || options.method.toUpperCase() === 'GET';
+
+  let res;
+
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      res = await fetchWithTimeout(url, { ...options, headers, body });
+      if (retryable && RETRYABLE_STATUS.has(res.status) && attempt < RETRY_DELAYS_MS.length) {
+        await sleep(RETRY_DELAYS_MS[attempt]);
+        continue;
+      }
+      break;
+    } catch (err) {
+      const isTimeout = err.name === 'AbortError';
+      const isNetworkDrop = err instanceof TypeError;
+      if (retryable && (isTimeout || isNetworkDrop) && attempt < RETRY_DELAYS_MS.length) {
+        await sleep(RETRY_DELAYS_MS[attempt]);
+        continue;
+      }
+      const netErr = new Error(
+        isTimeout
+          ? 'The server took too long to respond. Please try again.'
+          : 'Unable to reach the server. Please check your connection and try again.'
+      );
+      netErr.status = 0;
+      netErr.cause = err;
+      throw netErr;
+    }
+  }
 
   const text = await res.text();
 
