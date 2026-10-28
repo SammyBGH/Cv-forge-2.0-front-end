@@ -164,6 +164,7 @@ export default function HomePage() {
   const [activeSection, setActiveSection] = useState('');
   const [profileIndex, setProfileIndex] = useState(0);
   const rootRef = useRef(null);
+  const navRef = useRef(null);
   const destination = user ? '/dashboard' : '/login';
   const profile = HERO_PROFILES[profileIndex];
 
@@ -184,14 +185,30 @@ export default function HomePage() {
     return () => window.clearInterval(id);
   }, []);
 
-  // Dismiss the collapsed mobile menu on Escape.
+  // Dismiss the collapsed mobile menu on Escape, on a click outside it, or
+  // as soon as focus leaves the panel (tabbing or tapping somewhere else).
   useEffect(() => {
     if (!menuOpen) return undefined;
+
     const onKeyDown = (event) => {
       if (event.key === 'Escape') setMenuOpen(false);
     };
+    const onPointerDown = (event) => {
+      if (!navRef.current?.contains(event.target)) setMenuOpen(false);
+    };
+    const onFocusOut = (event) => {
+      // relatedTarget is null when focus leaves the document entirely.
+      if (!navRef.current?.contains(event.relatedTarget)) setMenuOpen(false);
+    };
+
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('focusout', onFocusOut);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('focusout', onFocusOut);
+    };
   }, [menuOpen]);
 
   // Highlight whichever section is currently in the reading band,
@@ -242,7 +259,7 @@ export default function HomePage() {
     <div className="forge-home" ref={rootRef}>
       <a className="skip-link" href="#main-content">Skip to content</a>
 
-      <nav className={`forge-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
+      <nav ref={navRef} className={`forge-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
         <div className="forge-nav-inner">
           <Link to="/" className="forge-wordmark" aria-label="CV Forge home">
             <span className="wordmark-mark"><i /><i /><i /></span>

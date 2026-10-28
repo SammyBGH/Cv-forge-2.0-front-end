@@ -243,7 +243,9 @@
 /* ---------------- RESPONSIVE ---------------- */
 @media (max-width:800px){
   .forge-nav-inner,.forge-hero-inner,.process-section,.audiences-section,.templates-inner{width:min(100% - 32px,1240px)}
-  .forge-nav-inner{height:72px}
+  /* The links panel leaves the grid flow, so the track list drops to two
+     columns — otherwise the actions fall into the middle track. */
+  .forge-nav-inner{height:72px;grid-template-columns:1fr auto}
   .forge-nav-actions{gap:14px}
   /* The inline links collapse into a drop-down panel behind the hamburger. */
   .forge-nav-links{position:absolute;top:100%;left:0;right:0;display:flex;flex-direction:column;gap:0;padding:6px 20px 14px;background:var(--paper-0);border-bottom:1px solid var(--line);box-shadow:var(--shadow-lg);visibility:hidden;opacity:0;transform:translateY(-10px);transition:opacity .22s ease,transform .25s ease,visibility .25s}
