@@ -161,3 +161,16 @@ export const LogOutIcon = (p) => (
   </Svg>
 );
 
+export const PlusIcon = (p) => (
+  <Svg strokeWidth={2.2} {...p}>
+    <path d="M12 5v14" />
+    <path d="M5 12h14" />
+  </Svg>
+);
+
+export const MinusIcon = (p) => (
+  <Svg strokeWidth={2.2} {...p}>
+    <path d="M5 12h14" />
+  </Svg>
+);
+

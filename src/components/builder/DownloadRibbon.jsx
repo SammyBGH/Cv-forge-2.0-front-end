@@ -22,7 +22,7 @@ const DownloadRibbon = forwardRef(({ status, onPay, payBusy, onExport, isExporti
       <div className="ribbon-text">
         <strong>{chip.label}</strong>
         {status?.validUntil ? (
-          <span className="ribbon-date-hint"> · Valid until {new Date(status.validUntil).toLocaleDateString()}</span>
+          <span className="ribbon-date-hint">Valid until {new Date(status.validUntil).toLocaleDateString()}</span>
         ) : null}
       </div>
       <div className="ribbon-actions">

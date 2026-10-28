@@ -1,5 +1,8 @@
 /* ========================================
-   APP SHELL — REFINED NAVIGATION
+   APP SHELL — APPLICATION CHROME
+   A branded, light-first top bar built on
+   the "Paper & Ink" tokens (teal = action,
+   citron = signal).
    ======================================== */
 
 .shell {
@@ -10,13 +13,34 @@
   width: 100%;
 }
 
+/* --- Header ------------------------------------------------ */
+
 .shell-header {
-  background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border-default);
   position: sticky;
   top: 0;
   z-index: var(--z-30);
-  box-shadow: var(--shadow-xs);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-default);
+}
+
+/* Signature accent rule: a teal→citron underline that
+   rides the header's hairline, then fades out. */
+.shell-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    var(--accent) 10%,
+    var(--signal) 26%,
+    var(--signal) 34%,
+    transparent 58%
+  );
 }
 
 .shell-header-inner {
@@ -27,151 +51,271 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-6);
+  gap: var(--space-5);
 }
+
+/* --- Brand ------------------------------------------------- */
 
 .shell-brand {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  gap: var(--space-4);
+  min-width: 0;
 }
 
 .brand-link {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-base);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--brand-primary);
+  gap: var(--space-2-5);
+  color: var(--ink-900);
   text-decoration: none;
+  transition: color var(--duration-150) var(--ease-out);
 }
 
 .brand-link:hover {
-  opacity: 0.85;
+  color: var(--accent-dark);
 }
 
+.brand-link strong {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Quiet offset mark — the brand's one hard shadow up here. */
 .shell-mark {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
+  flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--brand-primary);
+  background: var(--ink-800);
   color: var(--text-inverse);
-  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--signal);
+  transition: box-shadow var(--duration-150) var(--ease-out);
 }
 
-.shell-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
+.brand-link:hover .shell-mark {
+  box-shadow: 5px 5px 0 var(--signal);
 }
 
-.shell-nav-link {
-  padding: 7px 13px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: color var(--duration-150) ease, background var(--duration-150) ease;
+/* Where you are — a location readout, not a tab that goes nowhere. */
+.shell-crumb-rule {
+  width: 1px;
+  height: 22px;
+  flex: none;
+  background: var(--border-default);
 }
 
-.shell-nav-link:hover {
-  color: var(--text-primary);
-  background: var(--bg-subtle);
+.shell-crumb {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.shell-nav-link.is-active {
-  color: var(--text-primary);
-  background: var(--bg-muted);
-}
+/* --- Right cluster ----------------------------------------- */
 
 .shell-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.shell-actions {
   display: flex;
   align-items: center;
   gap: var(--space-3);
 }
 
-.shell-divider {
-  width: 1px;
-  height: 26px;
-  background: var(--border-default);
+/* The header action is the only primary up here, so it carries
+   the brand's offset shadow rather than a soft one. */
+.shell-actions .btn-primary {
+  box-shadow: 3px 3px 0 var(--signal);
 }
 
-.shell-user {
-  display: flex;
+.shell-actions .btn-primary:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--signal);
+}
+
+/* --- Account ----------------------------------------------- */
+
+.shell-account {
+  position: relative;
+}
+
+.shell-account-btn {
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 4px 12px 4px 4px;
-  background: var(--bg-subtle);
+  padding: 4px 10px 4px 4px;
+  background: transparent;
   border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background var(--duration-150) var(--ease-out),
+              border-color var(--duration-150) var(--ease-out);
+}
+
+.shell-account-btn:hover,
+.shell-account-btn.is-open {
+  background: var(--bg-subtle);
+  border-color: var(--border-strong);
+}
+
+.shell-account-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .avatar {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
+  flex: none;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .avatar-placeholder {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--text-inverse);
+  width: 26px;
+  height: 26px;
+  flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 700;
 }
 
 .shell-name {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--text-primary);
-  max-width: 150px;
+  color: var(--ink-800);
+}
+
+.shell-account-caret {
+  display: inline-flex;
+  color: var(--ink-400);
+  transition: transform var(--duration-150) var(--ease-out);
+}
+
+.shell-account-btn.is-open .shell-account-caret {
+  transform: rotate(180deg);
+}
+
+@keyframes shell-menu-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.shell-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: var(--z-40);
+  min-width: 236px;
+  padding: var(--space-1-5);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  animation: shell-menu-in var(--duration-150) var(--ease-out) both;
+}
+
+.shell-menu-head {
+  margin: 0 0 var(--space-1-5);
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.shell-menu-head strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-800);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.shell-signout-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-default);
+.shell-menu-head span {
+  font-size: 11.5px;
   color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shell-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  padding: 9px var(--space-3);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
   font-size: 12.5px;
   font-weight: 600;
+  text-align: left;
+  color: var(--ink-700);
   cursor: pointer;
-  transition: all var(--duration-150) ease;
+  transition: background var(--duration-150) var(--ease-out),
+              color var(--duration-150) var(--ease-out);
 }
 
-.shell-signout-btn:hover {
-  color: var(--error);
+.shell-menu-item:hover {
   background: var(--error-bg);
-  border-color: color-mix(in srgb, var(--error) 30%, transparent);
+  color: var(--error);
 }
 
-.shell-signout-btn svg {
+.shell-menu-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.shell-menu-item svg {
   display: block;
 }
+
+/* --- Main -------------------------------------------------- */
 
 .shell-main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
+
+/* --- Responsive -------------------------------------------- */
 
 @media (max-width: 768px) {
   .shell-header-inner {
-    padding: 0 var(--space-4);
     height: 60px;
+    padding: 0 var(--space-4);
     gap: var(--space-3);
   }
 
@@ -179,24 +323,59 @@
     gap: var(--space-3);
   }
 
-  .shell-name,
-  .shell-divider {
+  /* The location readout is the first thing to go. */
+  .shell-crumb-rule,
+  .shell-crumb {
     display: none;
   }
 
-  .shell-user {
-    padding: 3px;
-    background: transparent;
-    border-color: transparent;
+  .shell-right {
+    gap: var(--space-2);
   }
 }
 
 @media (max-width: 560px) {
-  .shell-signout-label {
+  .shell-name {
     display: none;
   }
 
-  .shell-signout-btn {
-    padding: 7px 9px;
+  .shell-account-btn {
+    padding: 3px;
+    gap: 0;
+  }
+
+  .shell-account-caret {
+    display: none;
+  }
+
+  .shell-actions .btn {
+    padding: 8px 12px;
+    font-size: var(--text-xs);
+  }
+}
+
+@media (max-width: 420px) {
+  /* Below this the action collapses to its icon. */
+  .shell-actions .shell-action-label {
+    display: none;
+  }
+
+  .shell-actions .btn {
+    padding: 8px 10px;
+    gap: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-link:hover .shell-mark {
+    box-shadow: 3px 3px 0 var(--signal);
+  }
+
+  .shell-account-btn.is-open .shell-account-caret {
+    transform: none;
+  }
+
+  .shell-menu {
+    animation: none;
   }
 }

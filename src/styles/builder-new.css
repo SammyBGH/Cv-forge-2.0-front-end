@@ -13,6 +13,99 @@
 }
 
 /* ========================================
+   EXPORT RIBBON
+   The studio's status strip: clean paper,
+   a tone-coded edge and mono detail.
+   ======================================== */
+
+.download-ribbon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: 11px var(--space-6);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-default);
+  flex-wrap: wrap;
+}
+
+/* Tone-coded edge — citron while export is locked, teal once it is open. */
+.download-ribbon::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--signal);
+}
+
+.download-ribbon.ribbon-ok::before {
+  background: var(--accent);
+}
+
+.ribbon-text {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.ribbon-text strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+}
+
+.ribbon-text strong::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  flex: none;
+  background: var(--signal);
+}
+
+.download-ribbon.ribbon-ok .ribbon-text strong::before {
+  background: var(--accent);
+}
+
+.ribbon-date-hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.ribbon-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* The one primary action up here carries the brand's offset shadow. */
+.download-pdf-btn {
+  box-shadow: 3px 3px 0 var(--signal);
+}
+
+.download-pdf-btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--signal);
+}
+
+.download-pdf-btn:active:not(:disabled) {
+  transform: translate(0, 0);
+  box-shadow: 3px 3px 0 var(--signal);
+}
+
+/* ========================================
    TOP NOTIFICATION / TRANSLATION BANNERS
    ======================================== */
 
@@ -100,6 +193,26 @@
   flex-wrap: wrap;
 }
 
+/* Signature accent rule — the same teal→citron hairline the
+   dashboard chrome carries, so the two areas read as one product. */
+.builder-topbar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    var(--accent) 8%,
+    var(--signal) 22%,
+    var(--signal) 30%,
+    transparent 55%
+  );
+}
+
 .builder-topbar-left {
   display: flex;
   align-items: center;
@@ -137,12 +250,15 @@
 .title-input {
   width: 100%;
   border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  border-bottom-color: var(--border-subtle);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
   background: transparent;
-  font-size: var(--text-base);
-  font-weight: 700;
-  color: var(--text-primary);
-  padding: 6px 10px;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+  padding: 5px 9px;
   transition: all var(--duration-150) ease;
 }
 
@@ -159,18 +275,32 @@
 }
 
 .save-chip {
-  font-size: 11px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--success);
-  background: var(--success-bg);
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
   white-space: nowrap;
+}
+
+.save-chip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: var(--success);
 }
 
 .save-chip.is-saving {
   color: var(--warning);
-  background: var(--warning-bg);
+}
+
+.save-chip.is-saving::before {
+  background: var(--warning);
 }
 
 .builder-topbar-controls {
@@ -180,6 +310,15 @@
   flex-wrap: wrap;
 }
 
+/* Once the bar fits on one line, a hairline sets the controls apart
+   from the document title instead of letting them crowd it. */
+@media (min-width: 1180px) {
+  .builder-topbar-controls {
+    padding-left: var(--space-5);
+    border-left: 1px solid var(--border-subtle);
+  }
+}
+
 .control-group {
   display: flex;
   align-items: center;
@@ -187,11 +326,12 @@
 }
 
 .control-group-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.14em;
 }
 
 /* Toolbar dropdowns */
@@ -245,21 +385,27 @@
   gap: 2px;
   background: var(--bg-muted);
   padding: 3px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-default);
 }
 
 .zoom-btn {
+  display: grid;
+  place-items: center;
   padding: 4px 8px;
-  font-size: 13px;
-  font-weight: 700;
   color: var(--text-secondary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
+}
+
+.zoom-btn svg {
+  display: block;
 }
 
 .zoom-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   color: var(--text-secondary);
   min-width: 42px;
   text-align: center;
@@ -598,12 +744,6 @@
   justify-content: space-between;
 }
 
-.field-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
 .field-badge {
   font-size: 10px;
   font-weight: 600;
@@ -639,37 +779,6 @@
   padding: 2px 6px;
   border-radius: var(--radius-sm);
   white-space: nowrap;
-}
-
-.field-hint {
-  font-size: 11px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-}
-
-.input,
-.textarea {
-  width: 100%;
-  padding: 9px 12px;
-  font-size: 13px;
-  font-family: inherit;
-  color: var(--text-primary);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-lg);
-  transition: all var(--duration-150) ease;
-}
-
-.input:focus,
-.textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 3px 3px 0 var(--accent-light);
-}
-
-.textarea {
-  resize: vertical;
-  line-height: 1.5;
 }
 
 .textarea.mini {
@@ -1242,6 +1351,15 @@
 }
 
 @media (max-width: 768px) {
+  .download-ribbon {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .ribbon-actions {
+    width: 100%;
+  }
+
   .builder-topbar {
     padding: var(--space-3) var(--space-4);
   }
@@ -1258,5 +1376,15 @@
 
   .preview-stage {
     transform: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ribbon-text strong {
+    font-size: 12px;
+  }
+
+  .ribbon-date-hint {
+    display: none;
   }
 }

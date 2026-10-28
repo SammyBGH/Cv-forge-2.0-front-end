@@ -11,6 +11,14 @@ const Check = () => (
   <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8.25 3.05 3L13 4.75" /></svg>
 );
 
+/** Numbered section header — the page's editorial rhythm. */
+const SectionHead = ({ index, label }) => (
+  <div className="section-head" data-reveal>
+    <span className="section-head-label"><b>{index}</b> — {label}</span>
+    <span className="section-head-rule" aria-hidden="true" />
+  </div>
+);
+
 /** Sample documents shown in the hero, one profession at a time. */
 const HERO_PROFILES = [
   {
@@ -59,9 +67,101 @@ const AUDIENCES = [
   { label: 'Students & Career Changers', detail: 'First CVs, internships, and fresh starts.' },
 ];
 
+/** The three real CV layouts offered in the builder.
+    `id` must match TEMPLATES in utils/cvDesign.js so a card
+    can hand its layout straight to the create-CV flow. */
+const TEMPLATES = [
+  {
+    id: 'modern-split',
+    variant: 'split',
+    tag: 'Two column',
+    label: 'Modern Split',
+    blurb: 'A contemporary split layout with a dedicated sidebar for contact details and skills.',
+  },
+  {
+    id: 'minimal',
+    variant: 'minimal',
+    tag: 'Single column',
+    label: 'Classic Minimal',
+    blurb: 'Understated and highly readable, with generous type and calm, even spacing.',
+  },
+  {
+    id: 'accent-header',
+    variant: 'exec',
+    tag: 'Header banner',
+    label: 'Executive Header',
+    blurb: 'A distinguished header banner sitting above a structured, professional grid.',
+  },
+];
+
+/** CSS-drawn document mock-up for a template preview. */
+const TemplatePreview = ({ variant }) => {
+  if (variant === 'split') {
+    return (
+      <div className="template-sheet tp-split" aria-hidden="true">
+        <div className="tp-split-side">
+          <i className="tp-dot" />
+          <i className="tp-line tp-line-xs" />
+          <i className="tp-line tp-line-xs" />
+          <i className="tp-line tp-line-xs" />
+          <i className="tp-line tp-line-xs" />
+        </div>
+        <div className="tp-split-main">
+          <i className="tp-line tp-line-lg tp-strong" />
+          <i className="tp-line tp-line-sm" />
+          <i className="tp-gap" />
+          <i className="tp-line tp-line-md" />
+          <i className="tp-line tp-line-xl" />
+          <i className="tp-line tp-line-md" />
+          <i className="tp-gap" />
+          <i className="tp-line tp-line-xl tp-strong" />
+          <i className="tp-line tp-line-lg" />
+        </div>
+      </div>
+    );
+  }
+  if (variant === 'minimal') {
+    return (
+      <div className="template-sheet tp-minimal" aria-hidden="true">
+        <i className="tp-name tp-line tp-center" />
+        <i className="tp-line tp-line-sm tp-center" />
+        <i className="tp-hr" />
+        <i className="tp-line tp-line-lg tp-center" />
+        <i className="tp-line tp-line-xl tp-center" />
+        <i className="tp-hr" />
+        <i className="tp-line tp-line-lg tp-center" />
+        <i className="tp-line tp-line-md tp-center" />
+      </div>
+    );
+  }
+  return (
+    <div className="template-sheet tp-exec" aria-hidden="true">
+      <div className="tp-exec-banner">
+        <i className="tp-line tp-line-lg tp-strong" />
+        <i className="tp-line tp-line-sm" />
+      </div>
+      <div className="tp-exec-grid">
+        <div>
+          <i className="tp-line tp-line-md tp-strong" />
+          <i className="tp-line tp-line-xl" />
+          <i className="tp-line tp-line-lg" />
+          <i className="tp-line tp-line-md" />
+        </div>
+        <div>
+          <i className="tp-line tp-line-md tp-strong" />
+          <i className="tp-line tp-line-lg" />
+          <i className="tp-line tp-line-md" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function HomePage() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
   const [profileIndex, setProfileIndex] = useState(0);
   const rootRef = useRef(null);
   const destination = user ? '/dashboard' : '/login';
@@ -74,11 +174,44 @@ export default function HomePage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // The hero rotates on its own, but only for people who have not asked
+  // for reduced motion — everyone else uses the manual switcher instead.
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
     const id = window.setInterval(() => {
       setProfileIndex((i) => (i + 1) % HERO_PROFILES.length);
     }, 4800);
     return () => window.clearInterval(id);
+  }, []);
+
+  // Dismiss the collapsed mobile menu on Escape.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [menuOpen]);
+
+  // Highlight whichever section is currently in the reading band,
+  // so the nav reflects where the visitor actually is.
+  useEffect(() => {
+    const sections = ['process', 'audiences', 'templates']
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    if (!sections.length || !('IntersectionObserver' in window)) return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: '-35% 0px -55% 0px', threshold: [0, 0.2, 0.5] }
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -107,16 +240,18 @@ export default function HomePage() {
 
   return (
     <div className="forge-home" ref={rootRef}>
+      <a className="skip-link" href="#main-content">Skip to content</a>
+
       <nav className={`forge-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
         <div className="forge-nav-inner">
           <Link to="/" className="forge-wordmark" aria-label="CV Forge home">
             <span className="wordmark-mark"><i /><i /><i /></span>
             <span>CV Forge</span>
           </Link>
-          <div className="forge-nav-links">
-            <a href="#process">Process</a>
-            <a href="#audiences">Who it&apos;s for</a>
-            <a href="#templates">Templates</a>
+          <div id="forge-nav-links" className={`forge-nav-links ${menuOpen ? 'is-open' : ''}`}>
+            <a href="#process" className={activeSection === 'process' ? 'is-active' : ''} onClick={() => setMenuOpen(false)}>Process</a>
+            <a href="#audiences" className={activeSection === 'audiences' ? 'is-active' : ''} onClick={() => setMenuOpen(false)}>Who it&apos;s for</a>
+            <a href="#templates" className={activeSection === 'templates' ? 'is-active' : ''} onClick={() => setMenuOpen(false)}>Templates</a>
           </div>
           <div className="forge-nav-actions">
             {!user && (
@@ -127,13 +262,23 @@ export default function HomePage() {
             <Link to={destination} className="forge-nav-action">
               {user ? 'Open workspace' : 'Start for free'} <Arrow />
             </Link>
+            <button
+              type="button"
+              className={`forge-nav-toggle ${menuOpen ? 'is-open' : ''}`}
+              aria-expanded={menuOpen}
+              aria-controls="forge-nav-links"
+              aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <i /><i /><i />
+            </button>
           </div>
         </div>
       </nav>
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="forge-hero">
-          <div className="hero-grain" />
+          <div className="hero-grain" aria-hidden="true" />
           <div className="forge-hero-inner">
             <div className="hero-copy">
               <p className="section-kicker reveal-1"><span /> A considered way to apply</p>
@@ -153,9 +298,31 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="resume-stage reveal-stage" aria-label="A preview of a professionally formatted CV">
-              <div className="stage-caption">Live document view <span>01 — 04</span></div>
-              <div className="resume-sheet">
+            <div className="resume-stage reveal-stage">
+              <div className="stage-top">
+                <span className="stage-caption" aria-hidden="true">Live document view</span>
+                {/* The sheet is a decorative mock-up, so it stays out of the
+                    accessibility tree. This switcher is the accessible control
+                    for browsing the samples. */}
+                <div className="stage-controls" role="group" aria-label="Sample CV preview">
+                  {HERO_PROFILES.map((item, i) => (
+                    <button
+                      key={item.role}
+                      type="button"
+                      className={`stage-dot ${i === profileIndex ? 'is-active' : ''}`}
+                      aria-label={`Show sample CV: ${item.role}`}
+                      aria-pressed={i === profileIndex}
+                      onClick={() => setProfileIndex(i)}
+                    >
+                      <span />
+                    </button>
+                  ))}
+                </div>
+                <span className="stage-counter" aria-hidden="true">
+                  {String(profileIndex + 1).padStart(2, '0')} — {String(HERO_PROFILES.length).padStart(2, '0')}
+                </span>
+              </div>
+              <div className="resume-sheet" aria-hidden="true">
                 <div className="sheet-topline" />
                 <div className="sheet-body" key={profile.role}>
                   <div className="sheet-name">{profile.first}<br />{profile.last}</div>
@@ -178,11 +345,17 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="stage-card stage-card-top"><span className="status-dot" /> Changes saved</div>
-              <div className="stage-card stage-card-bottom"><span>CV</span> Ready to export <Arrow /></div>
+              <div className="stage-card stage-card-top" aria-hidden="true"><span className="status-dot" /> Changes saved</div>
+              <div className="stage-card stage-card-bottom" aria-hidden="true"><span>CV</span> Ready to export <Arrow /></div>
             </div>
           </div>
-          <div className="hero-rule"><span>Scroll to explore</span><i /></div>
+          <div className="hero-band">
+            <div className="hero-band-inner">
+              <span className="hero-band-label">Scroll to explore</span>
+              <span className="hero-band-rule" aria-hidden="true" />
+              <span className="hero-band-meta">Trades · Healthcare · Education · Office · Creative · Finance</span>
+            </div>
+          </div>
         </section>
 
         <section className="proof-band" aria-label="CV Forge principles">
@@ -192,32 +365,38 @@ export default function HomePage() {
         </section>
 
         <section className="process-section" id="process">
-          <div className="section-heading" data-reveal>
-            <p className="section-kicker"><span /> The process</p>
-            <h2>A quieter path from<br />draft to <em>done.</em></h2>
-          </div>
-          <div className="process-list">
-            <article className="process-item" data-reveal>
-              <span className="process-number">01</span>
-              <div><h3>Start with what you have</h3><p>Bring the details, bullet points, and half-finished drafts. The builder gives them a useful home.</p></div>
-              <span className="process-mark">A</span>
-            </article>
-            <article className="process-item" data-reveal>
-              <span className="process-number">02</span>
-              <div><h3>Shape it while you see it</h3><p>Every edit is reflected in a live preview, so hierarchy, spacing, and story stay in view.</p></div>
-              <span className="process-mark">B</span>
-            </article>
-            <article className="process-item" data-reveal>
-              <span className="process-number">03</span>
-              <div><h3>Leave with a document you own</h3><p>Choose a polished layout, export a PDF, and return to your work whenever you need it.</p></div>
-              <span className="process-mark">C</span>
-            </article>
+          <SectionHead index="01" label="The process" />
+          <div className="process-body">
+            <div className="process-intro" data-reveal>
+              <h2>A quieter path from<br />draft to <em>done.</em></h2>
+              <p className="process-lede">
+                Three deliberate steps take you from scattered notes to a document you are
+                genuinely glad to send.
+              </p>
+            </div>
+            <div className="process-list">
+              <article className="process-item" data-reveal>
+                <span className="process-number">01</span>
+                <div><h3>Start with what you have</h3><p>Bring the details, bullet points, and half-finished drafts. The builder gives them a useful home.</p></div>
+                <span className="process-mark">A</span>
+              </article>
+              <article className="process-item" data-reveal>
+                <span className="process-number">02</span>
+                <div><h3>Shape it while you see it</h3><p>Every edit is reflected in a live preview, so hierarchy, spacing, and story stay in view.</p></div>
+                <span className="process-mark">B</span>
+              </article>
+              <article className="process-item" data-reveal>
+                <span className="process-number">03</span>
+                <div><h3>Leave with a document you own</h3><p>Choose a polished layout, export a PDF, and return to your work whenever you need it.</p></div>
+                <span className="process-mark">C</span>
+              </article>
+            </div>
           </div>
         </section>
 
         <section className="audiences-section" id="audiences">
+          <SectionHead index="02" label="Who it's for" />
           <div className="audiences-heading" data-reveal>
-            <p className="section-kicker"><span /> Who it&apos;s for</p>
             <h2>Built for every<br /><em>kind of work.</em></h2>
             <p className="audiences-intro">
               A shop floor, a ward, a classroom, a boardroom. CV Forge is not written for one
@@ -235,22 +414,56 @@ export default function HomePage() {
           </ul>
         </section>
 
+        <section className="templates-section" id="templates">
+          <div className="templates-inner">
+            <SectionHead index="03" label="Templates" />
+            <div className="templates-head" data-reveal>
+              <h2>Three layouts.<br /><em>One clear read.</em></h2>
+              <p className="templates-intro">
+                Every layout is built around legibility first—so your experience leads and a
+                recruiter can find what matters in a single pass.
+              </p>
+            </div>
+            <div className="template-grid">
+              {TEMPLATES.map((template, i) => (
+                <Link
+                  className="template-card"
+                  key={template.id}
+                  to={`${destination}?template=${template.id}`}
+                  data-reveal
+                >
+                  <TemplatePreview variant={template.variant} />
+                  <div className="template-meta">
+                    <div className="template-meta-top">
+                      <span className="template-index">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="template-tag">{template.tag}</span>
+                    </div>
+                    <h3>{template.label}</h3>
+                    <p>{template.blurb}</p>
+                    <span className="template-cta">Use this layout <Arrow /></span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="details-section" id="details">
+          <SectionHead index="04" label="Details" />
           <div className="details-intro" data-reveal>
-            <p className="section-kicker"><span /> Built for the work behind the work</p>
             <h2>Small decisions.<br /><em>Serious difference.</em></h2>
           </div>
           <div className="detail-grid">
             <article className="detail-card detail-card-dark" data-reveal><span className="detail-index">01</span><h3>Autosave that stays out of your way.</h3><p>Your edits are saved as you build, so momentum does not depend on a save button.</p><div className="save-indicator"><span /> All changes saved</div></article>
             <article className="detail-card" data-reveal><span className="detail-index">02</span><h3>Preview with perspective.</h3><p>See the finished page as you work, not after you have filled out a long form.</p><div className="mini-layout"><i /><i /><i /><i /></div></article>
-            <article className="detail-card detail-card-wide" id="templates" data-reveal><span className="detail-index">03</span><div><h3>Templates with restraint.</h3><p>Thoughtful document layouts put your experience first and give recruiters a clearer read.</p></div><div className="template-lines"><i /><i /><i /><i /><i /></div></article>
+            <article className="detail-card detail-card-wide" data-reveal><span className="detail-index">03</span><div><h3>Templates with restraint.</h3><p>Thoughtful document layouts put your experience first and give recruiters a clearer read.</p></div><div className="template-lines"><i /><i /><i /><i /><i /></div></article>
           </div>
         </section>
 
         <section className="closing-section">
           <div className="closing-orbit orbit-one" /><div className="closing-orbit orbit-two" />
           <div className="closing-content">
-            <p className="section-kicker"><span /> Your next application</p>
+            <p className="closing-label"><b>05</b> — Get started</p>
             <h2>Make the first<br />page count.</h2>
             <p>Start with a free workspace. Take your time. Export only when the document feels like yours.</p>
             <Link to={destination} className="button button-light">{user ? 'Return to workspace' : 'Start building'} <Arrow /></Link>
@@ -264,20 +477,20 @@ export default function HomePage() {
             <Link to="/" className="forge-wordmark"><span className="wordmark-mark"><i /><i /><i /></span><span>CV Forge</span></Link>
             <p>For work worth reading.</p>
           </div>
-          
+
           <div className="forge-footer-links">
             <div className="footer-column">
               <h4>Product</h4>
               <a href="#process">How It Works</a>
               <a href="#templates">Templates</a>
             </div>
-            
+
             <div className="footer-column">
               <h4>Company</h4>
               <Link to="/about">About</Link>
               <Link to="/contact">Contact</Link>
             </div>
-            
+
             <div className="footer-column">
               <h4>Legal</h4>
               <Link to="/privacy">Privacy Policy</Link>

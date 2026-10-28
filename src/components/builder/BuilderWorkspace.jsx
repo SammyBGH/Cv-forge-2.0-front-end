@@ -27,6 +27,8 @@ import {
   ChevronDownIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
+  PlusIcon,
+  MinusIcon,
 } from '../ui/Icons.jsx';
 import '../../styles/builder-new.css';
 
@@ -344,19 +346,21 @@ export default function BuilderWorkspace({ headerLeft }) {
             <button
               type="button"
               className="btn-ghost small zoom-btn"
+              aria-label="Zoom out"
               onClick={() => setZoom((z) => Math.max(0.55, z - 0.08))}
               title="Zoom out"
             >
-              −
+              <MinusIcon size={14} />
             </button>
             <span className="zoom-label">{Math.round(zoom * 100)}%</span>
             <button
               type="button"
               className="btn-ghost small zoom-btn"
+              aria-label="Zoom in"
               onClick={() => setZoom((z) => Math.min(1.25, z + 0.08))}
               title="Zoom in"
             >
-              +
+              <PlusIcon size={14} />
             </button>
           </div>
         </div>

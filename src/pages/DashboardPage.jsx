@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import { api } from '../api/client.js';
 import AppShell from '../components/layout/AppShell.jsx';
 import Modal from '../components/ui/Modal.jsx';
-import { FileIcon, CheckIcon, GlobeIcon } from '../components/ui/Icons.jsx';
+import { FileIcon, CheckIcon, GlobeIcon, PlusIcon } from '../components/ui/Icons.jsx';
 import { TEMPLATES, THEMES, languageLabel } from '../utils/cvDesign.js';
 import '../styles/dashboard-new.css';
 import '../styles/animations.css';
@@ -14,6 +14,7 @@ export default function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const [searchParams] = useSearchParams();
   const [cvs, setCvs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -33,6 +34,15 @@ export default function DashboardPage() {
   useEffect(() => {
     refresh();
   }, []);
+
+  // A template card on the homepage hands its layout over as ?template=<id>,
+  // so the create dialog opens with that layout already chosen.
+  useEffect(() => {
+    const requested = searchParams.get('template');
+    if (requested && TEMPLATES.some((t) => t.id === requested)) {
+      setCreateModal({ isOpen: true, title: '', templateId: requested });
+    }
+  }, [searchParams]);
 
   async function handleCreate(e) {
     if (e) e.preventDefault();
@@ -92,7 +102,8 @@ export default function DashboardPage() {
           className="btn btn-primary"
           onClick={() => setCreateModal({ isOpen: true, title: 'My New CV', templateId: 'modern-split' })}
         >
-          + Create New CV
+          <PlusIcon size={15} />
+          <span className="shell-action-label">Create New CV</span>
         </button>
       }
     >
