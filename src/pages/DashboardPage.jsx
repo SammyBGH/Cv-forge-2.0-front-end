@@ -244,7 +244,7 @@ export default function DashboardPage() {
               id="cv-modal-title"
               type="text"
               className="input"
-              placeholder="e.g. Senior Software Engineer CV"
+              placeholder="e.g. Marketing Manager CV"
               value={createModal.title}
               onChange={(e) => setCreateModal((prev) => ({ ...prev, title: e.target.value }))}
               autoFocus

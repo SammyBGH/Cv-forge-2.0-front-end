@@ -11,16 +11,73 @@ const Check = () => (
   <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8.25 3.05 3L13 4.75" /></svg>
 );
 
+/** Sample documents shown in the hero, one profession at a time. */
+const HERO_PROFILES = [
+  {
+    first: 'Amara', last: 'Mensah',
+    role: 'Product designer', location: 'Accra, Ghana',
+    profile: 'Designing digital products that make complex tasks feel natural.',
+    skills: ['Product strategy', 'Systems thinking', 'Interface design', 'Research synthesis'],
+    jobs: [['Senior Product Designer', 'Northstar — 2022–now'], ['Product Designer', 'Studio A — 2019–2022']],
+    education: ['BFA, Communication Design', '2015–2019'],
+  },
+  {
+    first: 'Daniel', last: 'Okoro',
+    role: 'Electrician', location: 'Leeds, United Kingdom',
+    profile: 'Certified electrician with eight years across domestic and commercial installs.',
+    skills: ['Wiring & testing', 'Fault finding', 'Health & safety', 'Site supervision'],
+    jobs: [['Senior Electrician', 'Northgate Contracts — 2020–now'], ['Electrician', 'Bright Spark Ltd — 2016–2020']],
+    education: ['NVQ Level 3, Electrical Installation', '2012–2015'],
+  },
+  {
+    first: 'Sofia', last: 'Alvarez',
+    role: 'Registered nurse', location: 'Madrid, Spain',
+    profile: 'Compassionate nurse focused on patient care, triage, and clear communication.',
+    skills: ['Patient care', 'Triage', 'Care planning', 'Record keeping'],
+    jobs: [['Registered Nurse', 'Hospital Central — 2021–now'], ['Staff Nurse', 'Clinica Norte — 2018–2021']],
+    education: ['BSc, Nursing', '2014–2018'],
+  },
+  {
+    first: 'Priya', last: 'Nair',
+    role: 'Operations manager', location: 'Singapore',
+    profile: 'Operations lead who keeps teams, schedules, and budgets running without friction.',
+    skills: ['Team leadership', 'Budgeting', 'Process improvement', 'Vendor management'],
+    jobs: [['Operations Manager', 'Meridian Retail — 2019–now'], ['Operations Coordinator', 'Lumen Group — 2016–2019']],
+    education: ['BA, Business Administration', '2012–2016'],
+  },
+];
+
+/** The range of work CV Forge is built to serve. */
+const AUDIENCES = [
+  { label: 'Trades & Field Work', detail: 'Electricians, mechanics, drivers, and site crews.' },
+  { label: 'Healthcare & Care', detail: 'Nurses, carers, technicians, and support staff.' },
+  { label: 'Education & Training', detail: 'Teachers, tutors, instructors, and trainers.' },
+  { label: 'Hospitality & Retail', detail: 'Front of house, chefs, sales, and store teams.' },
+  { label: 'Office & Administration', detail: 'Assistants, coordinators, and operations staff.' },
+  { label: 'Creative & Marketing', detail: 'Designers, writers, marketers, and content roles.' },
+  { label: 'Finance & Professional Services', detail: 'Analysts, accountants, advisors, and legal staff.' },
+  { label: 'Students & Career Changers', detail: 'First CVs, internships, and fresh starts.' },
+];
+
 export default function HomePage() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [profileIndex, setProfileIndex] = useState(0);
   const destination = user ? '/dashboard' : '/login';
+  const profile = HERO_PROFILES[profileIndex];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setProfileIndex((i) => (i + 1) % HERO_PROFILES.length);
+    }, 4800);
+    return () => window.clearInterval(id);
   }, []);
 
   return (
@@ -33,12 +90,19 @@ export default function HomePage() {
           </Link>
           <div className="forge-nav-links">
             <a href="#process">Process</a>
-            <a href="#details">Details</a>
+            <a href="#audiences">Who it&apos;s for</a>
             <a href="#templates">Templates</a>
           </div>
-          <Link to={destination} className="forge-nav-action">
-            {user ? 'Open workspace' : 'Start for free'} <Arrow />
-          </Link>
+          <div className="forge-nav-actions">
+            {!user && (
+              <Link to="/login" className="forge-nav-signin">
+                Sign in
+              </Link>
+            )}
+            <Link to={destination} className="forge-nav-action">
+              {user ? 'Open workspace' : 'Start for free'} <Arrow />
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -68,21 +132,24 @@ export default function HomePage() {
               <div className="stage-caption">Live document view <span>01 — 04</span></div>
               <div className="resume-sheet">
                 <div className="sheet-topline" />
-                <div className="sheet-name">Amara<br />Mensah</div>
-                <div className="sheet-role">Product designer <span>Accra, Ghana</span></div>
-                <div className="sheet-columns">
-                  <div>
-                    <p className="sheet-label">Profile</p>
-                    <p className="sheet-copy">Designing digital products that make complex tasks feel natural.</p>
-                    <p className="sheet-label sheet-label-space">Experience</p>
-                    <div className="sheet-entry"><b>Senior Product Designer</b><span>Northstar — 2022–now</span><i /></div>
-                    <div className="sheet-entry"><b>Product Designer</b><span>Studio A — 2019–2022</span><i /></div>
-                  </div>
-                  <div className="sheet-sidebar">
-                    <p className="sheet-label">Selected skills</p>
-                    <p>Product strategy<br />Systems thinking<br />Interface design<br />Research synthesis</p>
-                    <p className="sheet-label sheet-label-space">Education</p>
-                    <p>BFA, Communication Design<br /><small>2015–2019</small></p>
+                <div className="sheet-body" key={profile.role}>
+                  <div className="sheet-name">{profile.first}<br />{profile.last}</div>
+                  <div className="sheet-role">{profile.role} <span>{profile.location}</span></div>
+                  <div className="sheet-columns">
+                    <div>
+                      <p className="sheet-label">Profile</p>
+                      <p className="sheet-copy">{profile.profile}</p>
+                      <p className="sheet-label sheet-label-space">Experience</p>
+                      {profile.jobs.map(([title, meta]) => (
+                        <div className="sheet-entry" key={title}><b>{title}</b><span>{meta}</span><i /></div>
+                      ))}
+                    </div>
+                    <div className="sheet-sidebar">
+                      <p className="sheet-label">Selected skills</p>
+                      <p>{profile.skills.map((skill, i) => (<span key={skill}>{skill}{i < profile.skills.length - 1 ? <br /> : null}</span>))}</p>
+                      <p className="sheet-label sheet-label-space">Education</p>
+                      <p>{profile.education[0]}<br /><small>{profile.education[1]}</small></p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -121,6 +188,26 @@ export default function HomePage() {
               <span className="process-mark">C</span>
             </article>
           </div>
+        </section>
+
+        <section className="audiences-section" id="audiences">
+          <div className="audiences-heading">
+            <p className="section-kicker"><span /> Who it&apos;s for</p>
+            <h2>Built for every<br /><em>kind of work.</em></h2>
+            <p className="audiences-intro">
+              A shop floor, a ward, a classroom, a boardroom. CV Forge is not written for one
+              industry alone—it adapts to the language, structure, and expectations of your field.
+            </p>
+          </div>
+          <ul className="audience-grid">
+            {AUDIENCES.map((audience, i) => (
+              <li className="audience-tile" key={audience.label}>
+                <span className="audience-index">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{audience.label}</h3>
+                <p>{audience.detail}</p>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="details-section" id="details">

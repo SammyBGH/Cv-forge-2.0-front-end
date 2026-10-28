@@ -5,15 +5,19 @@ import { BulbIcon, XIcon } from '../../ui/Icons.jsx';
 const STARTER_TEMPLATES = [
   {
     title: 'Experienced Professional',
-    text: 'Results-driven professional with extensive experience in delivering impactful projects, optimizing team processes, and solving complex challenges. Known for strong communication, analytical problem-solving, and a track record of driving measurable business value.',
+    text: 'Results-driven professional with a track record of delivering high-quality work, improving everyday processes, and solving problems before they escalate. Known for clear communication, dependable follow-through, and building strong working relationships across teams.',
   },
   {
     title: 'Recent Graduate / Entry Level',
-    text: 'Motivated and detail-oriented graduate with strong foundational training in analytical problem-solving and modern technical tools. Eager to apply academic insights, volunteer experience, and collaborative energy to a dynamic team.',
+    text: 'Motivated graduate with a solid grounding in my field and hands-on experience from coursework, volunteering, and part-time roles. Eager to learn quickly, take on responsibility, and contribute to a supportive team from day one.',
   },
   {
-    title: 'Technical / Engineering Specialist',
-    text: 'Dedicated technical specialist skilled in designing, developing, and maintaining high-quality systems and solutions. Experienced with cross-functional teamwork, modern best practices, and delivering clean, maintainable results on schedule.',
+    title: 'Career Changer',
+    text: 'Career-changer bringing several years of transferable experience from a previous field into a new one. Strong at picking up new systems quickly, working with people, and applying a practical, organised approach to unfamiliar challenges.',
+  },
+  {
+    title: 'Hands-on / Trade & Service',
+    text: 'Reliable, safety-conscious professional with practical experience in a trade or service environment. Comfortable working to deadlines, following procedures, and keeping customers and colleagues informed. Known for a strong work ethic and seeing jobs through to the end.',
   },
 ];
 
@@ -101,7 +105,7 @@ export default function SummaryEditor({ section }) {
         rows={5}
         maxLength={900}
         aria-labelledby={`${taId}-lbl`}
-        placeholder="Example: Detail-oriented Project Coordinator with 3+ years managing client deliverables and operational roadmaps. Experienced with Agile workflows, stakeholder reporting, and cross-functional team coordination."
+        placeholder="Example: Detail-oriented Project Coordinator with 3+ years managing client deliverables and operational schedules. Experienced with stakeholder reporting, budget tracking, and cross-functional team coordination."
         value={currentText}
         onChange={(e) => updateSection(section.key, { data: { ...d, html: e.target.value } })}
       />

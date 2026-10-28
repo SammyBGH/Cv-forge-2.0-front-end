@@ -5,16 +5,18 @@ import AutocompleteInput from '../../ui/AutocompleteInput.jsx';
 import { LockIcon } from '../../ui/Icons.jsx';
 
 const QUICK_HEADLINES = [
-  'Software Engineer',
-  'Frontend Developer',
-  'Product Designer',
-  'Marketing Specialist',
-  'Customer Success Lead',
-  'Operations Coordinator',
-  'Recent Graduate (Business Admin)',
-  'Registered Nurse',
-  'Financial Analyst',
+  'Customer Service Representative',
+  'Administrative Assistant',
   'Project Manager',
+  'Marketing Specialist',
+  'Registered Nurse',
+  'Sales Associate',
+  'Teacher',
+  'Operations Coordinator',
+  'Graphic Designer',
+  'Financial Analyst',
+  'Warehouse Supervisor',
+  'Recent Graduate',
 ];
 
 const COMMON_LOCATIONS = [
@@ -101,7 +103,7 @@ export default function PersonalEditor({ section, cv }) {
     {
       key: 'headline',
       label: 'Professional Headline',
-      placeholder: 'e.g. Full Stack Developer · 3+ Years Experience',
+      placeholder: 'e.g. Marketing Specialist · 3+ Years Experience',
       recommended: true,
       suggestions: QUICK_HEADLINES,
       hint: 'A concise summary of your current focus or target role',
@@ -144,11 +146,11 @@ export default function PersonalEditor({ section, cv }) {
     {
       key: 'website',
       label: 'Portfolio or Personal Website',
-      placeholder: 'https://kwamemensah.dev',
+      placeholder: 'https://yourportfolio.com',
       inputMode: 'url',
       inputType: 'url',
       autoComplete: 'url',
-      hint: 'Optional link to your projects, GitHub, or online portfolio',
+      hint: 'Optional link to your portfolio, work samples, or personal site',
     },
     {
       key: 'linkedin',
@@ -219,7 +221,7 @@ export default function PersonalEditor({ section, cv }) {
       <div className="form-cluster">
         <div className="form-cluster-header">
           <h4 className="form-cluster-title">Online Presence & Links</h4>
-          <p className="form-cluster-desc">Optional links to showcase your live work, code, or recommendations.</p>
+          <p className="form-cluster-desc">Optional links to showcase your portfolio, work samples, or recommendations.</p>
         </div>
         <div className="field-grid">
           {links.map((f) => (

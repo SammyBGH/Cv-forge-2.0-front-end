@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { LogOutIcon } from '../ui/Icons.jsx';
 import '../../styles/app-shell-new.css';
 
 export default function AppShell({ title, user, onLogout, actions, children }) {
@@ -20,11 +21,16 @@ export default function AppShell({ title, user, onLogout, actions, children }) {
               </span>
               <strong>CV Forge</strong>
             </Link>
-            {title && <span className="shell-crumb">{title}</span>}
+            <nav className="shell-nav" aria-label="Workspace">
+              <Link to="/dashboard" className="shell-nav-link is-active" aria-current="page">
+                {title || 'My CVs'}
+              </Link>
+            </nav>
           </div>
 
           <div className="shell-right">
             {actions}
+            <span className="shell-divider" aria-hidden="true" />
             <div className="shell-user">
               {user?.picture ? (
                 <img src={user.picture} alt="" className="avatar" />
@@ -32,15 +38,16 @@ export default function AppShell({ title, user, onLogout, actions, children }) {
                 <span className="avatar-placeholder">{initial}</span>
               )}
               <span className="shell-name">{user?.name || user?.email}</span>
-              <button
-                type="button"
-                className="shell-signout-btn"
-                onClick={onLogout}
-                title="Sign out of your account"
-              >
-                Sign out
-              </button>
             </div>
+            <button
+              type="button"
+              className="shell-signout-btn"
+              onClick={onLogout}
+              title="Sign out of your account"
+            >
+              <LogOutIcon size={13} />
+              <span className="shell-signout-label">Sign out</span>
+            </button>
           </div>
         </div>
       </header>

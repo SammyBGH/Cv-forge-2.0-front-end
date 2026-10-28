@@ -33,22 +33,27 @@ export const DEGREE_TYPE_SUGGESTIONS = [
   'Bootcamp / intensive course',
 ];
 
-/** Example fields of study — users can type anything */
+/** Example fields of study across many industries — users can type anything */
 export const PROGRAM_FIELD_SUGGESTIONS = [
-  'Electrical Engineering',
-  'Computer Science',
   'Business Administration',
-  'Nursing',
   'Accounting',
+  'Nursing',
+  'Computer Science',
   'Marketing',
-  'Mechanical Engineering',
   'Education',
   'Law',
   'Medicine',
   'Psychology',
   'Economics',
-  'Data Science',
+  'Social Work',
+  'Civil Engineering',
+  'Mechanical Engineering',
+  'Electrical Engineering',
+  'Hospitality & Tourism',
+  'Human Resources',
+  'Agriculture',
   'Graphic Design',
+  'Data Science',
 ];
 
 /**
@@ -69,40 +74,72 @@ export const DEGREE_SUGGESTIONS = [
   'Professional certification (in progress)',
 ];
 
+/** Example job titles spanning many sectors — used for autocomplete only */
 export const JOB_TITLE_SUGGESTIONS = [
+  // Early career
   'Intern',
   'Graduate Trainee',
-  'Research Assistant',
-  'Teaching Assistant',
+  'Apprentice',
+  'Volunteer',
+  // Administration & office
   'Administrative Assistant',
   'Office Administrator',
   'Receptionist',
-  'Customer Service Representative',
-  'Sales Associate',
-  'Retail Associate',
-  'Cashier',
-  'Warehouse Associate',
-  'Delivery Driver',
-  'Nursing Assistant',
-  'Care Assistant',
-  'Laboratory Technician',
-  'Field Technician',
-  'Junior Accountant',
-  'Bookkeeper',
-  'Marketing Assistant',
-  'Social Media Assistant',
-  'Content Writer',
-  'Graphic Design Assistant',
-  'Junior Analyst',
+  'Executive Assistant',
   'Data Entry Clerk',
   'Project Coordinator',
-  'Operations Assistant',
+  // Customer-facing & sales
+  'Customer Service Representative',
+  'Sales Associate',
+  'Retail Supervisor',
+  'Cashier',
+  'Call Centre Agent',
+  'Account Manager',
+  // Hospitality & food service
+  'Barista',
+  'Waiter / Waitress',
+  'Chef',
+  'Housekeeping Attendant',
+  'Front Desk Agent',
+  // Healthcare & care
+  'Nursing Assistant',
+  'Care Assistant',
+  'Registered Nurse',
+  'Medical Receptionist',
+  'Laboratory Technician',
+  'Pharmacist',
+  // Education
+  'Teaching Assistant',
+  'Teacher',
+  'Tutor',
+  'Early Years Practitioner',
+  // Trades, logistics & field work
+  'Warehouse Associate',
+  'Delivery Driver',
+  'Machine Operator',
+  'Electrician',
+  'Plumber',
+  'Site Supervisor',
+  'Field Technician',
+  'Security Officer',
+  // Finance & professional services
+  'Junior Accountant',
+  'Bookkeeper',
+  'Financial Analyst',
   'HR Assistant',
   'Legal Assistant',
-  'Community Organizer',
-  'Volunteer Coordinator',
+  'Paralegal',
+  // Creative & marketing
+  'Content Writer',
+  'Social Media Coordinator',
+  'Graphic Designer',
+  'Marketing Assistant',
+  'Photographer',
+  // Science, engineering & technology
+  'Research Assistant',
+  'Civil Engineer',
+  'Mechanical Technician',
   'Software Developer',
-  'Web Developer',
   'IT Support Technician',
 ];
 
@@ -115,23 +152,33 @@ export const SKILL_LEVEL_SUGGESTIONS = [
   'Expert',
 ];
 
-/** Tools, methods, equipment — tech and non-tech examples */
+/** Tools, equipment, software, or methods across many kinds of work */
 export const PROJECT_TOOLS_SUGGESTIONS = [
   'Microsoft Office (Word, Excel)',
   'Google Workspace',
+  'Spreadsheets & reporting',
+  'Scheduling & calendar tools',
+  'Point-of-sale (POS) systems',
+  'Customer relationship tools (CRM)',
+  'Accounting software',
+  'Project management tools',
   'Public speaking & presentations',
   'Customer service',
-  'Cash handling & POS',
-  'Patient care basics',
-  'Laboratory safety',
+  'Cash handling',
+  'Inventory & stock control',
+  'Patient care',
+  'Manual handling & lifting',
+  'Health & safety procedures',
+  'Laboratory procedures',
   'Power tools & hand tools',
+  'Machinery & equipment operation',
   'Driving (valid license)',
-  'Scheduling & calendar tools',
   'Social media content',
   'Photography / video',
+  'Design software (Photoshop, Canva)',
+  'Data analysis & visualisation',
   'Python',
   'JavaScript',
-  'Spreadsheets & reporting',
 ];
 
 export function recentYears(count = 45) {

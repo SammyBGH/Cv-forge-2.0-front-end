@@ -3,36 +3,39 @@ import { useCVBuilder } from '../../../context/CVBuilderContext.jsx';
 import AutocompleteInput from '../../ui/AutocompleteInput.jsx';
 import { FileIcon, ChevronUpIcon, ChevronDownIcon, XIcon } from '../../ui/Icons.jsx';
 
+/** Broad, transferable skills that apply across most industries and roles. */
 const POPULAR_SKILL_SUGGESTIONS = [
-  'JavaScript',
-  'React',
-  'Node.js',
-  'Python',
-  'Project Management',
-  'Data Analysis',
-  'Problem Solving',
-  'Team Leadership',
   'Communication',
-  'Customer Support',
-  'Microsoft Excel',
-  'Git / Version Control',
-  'SQL',
-  'Public Speaking',
+  'Teamwork',
+  'Customer Service',
+  'Time Management',
+  'Problem Solving',
+  'Attention to Detail',
+  'Organisation',
+  'Adaptability',
+  'Microsoft Office',
+  'Scheduling & Planning',
+  'Cash Handling',
+  'Conflict Resolution',
+  'Team Leadership',
+  'Health & Safety',
+  'Data Entry',
+  'Written Communication',
 ];
 
 const ACTION_VERBS = [
   'Led',
-  'Developed',
-  'Created',
   'Managed',
-  'Designed',
-  'Optimized',
-  'Collaborated',
-  'Implemented',
-  'Streamlined',
-  'Trained',
+  'Created',
+  'Coordinated',
   'Delivered',
+  'Improved',
+  'Supported',
+  'Trained',
+  'Organised',
+  'Handled',
   'Resolved',
+  'Achieved',
 ];
 
 function entryLabel(item, fields, idx) {

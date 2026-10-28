@@ -115,7 +115,7 @@ export default function SectionFormRouter({ section, cv }) {
         <ItemsEditor
           section={section}
           title="Projects & highlights"
-          titleHint="Class projects, volunteer builds, personal goals, research, or portfolio pieces."
+          titleHint="Class projects, volunteer work, personal goals, research, or portfolio pieces."
           fields={[
             {
               key: 'name',
@@ -167,7 +167,7 @@ export default function SectionFormRouter({ section, cv }) {
         <ItemsEditor
           section={section}
           title="Certificates & licenses"
-          titleHint="Professional licenses, safety cards, software certs, or exams you passed."
+          titleHint="Professional licences, safety cards, industry certificates, or exams you passed."
           fields={[
             {
               key: 'name',
