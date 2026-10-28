@@ -256,6 +256,11 @@ function Item({ type, item }) {
 
   if (!config) return null;
 
+  const detailLines = config.detail
+    ? String(config.detail).split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
+    : [];
+  const asBullets = detailLines.length > 0 && (type === 'experience' || type === 'projects');
+
   return (
     <li>
       <div className="cv-row-title">
@@ -263,7 +268,15 @@ function Item({ type, item }) {
         {config.date ? <span>{config.date}</span> : null}
       </div>
       {config.secondary ? <p className="cv-item-subtitle">{config.secondary}</p> : null}
-      {config.detail ? <p className="cv-item-detail">{config.detail}</p> : null}
+      {asBullets ? (
+        <ul className="cv-item-bullets">
+          {detailLines.map((line, i) => (
+            <li key={i}>{line}</li>
+          ))}
+        </ul>
+      ) : config.detail ? (
+        <p className="cv-item-detail">{config.detail}</p>
+      ) : null}
     </li>
   );
 }

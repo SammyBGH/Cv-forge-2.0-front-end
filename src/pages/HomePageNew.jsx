@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import '../styles/homepage-new.css';
 
@@ -63,6 +63,7 @@ export default function HomePage() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [profileIndex, setProfileIndex] = useState(0);
+  const rootRef = useRef(null);
   const destination = user ? '/dashboard' : '/login';
   const profile = HERO_PROFILES[profileIndex];
 
@@ -80,8 +81,32 @@ export default function HomePage() {
     return () => window.clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+    const targets = root.querySelectorAll('[data-reveal]');
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach((el) => el.classList.add('is-in'));
+      return undefined;
+    }
+    root.classList.add('js-reveal');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -12% 0px', threshold: 0.15 }
+    );
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="forge-home">
+    <div className="forge-home" ref={rootRef}>
       <nav className={`forge-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
         <div className="forge-nav-inner">
           <Link to="/" className="forge-wordmark" aria-label="CV Forge home">
@@ -167,22 +192,22 @@ export default function HomePage() {
         </section>
 
         <section className="process-section" id="process">
-          <div className="section-heading">
+          <div className="section-heading" data-reveal>
             <p className="section-kicker"><span /> The process</p>
             <h2>A quieter path from<br />draft to <em>done.</em></h2>
           </div>
           <div className="process-list">
-            <article className="process-item">
+            <article className="process-item" data-reveal>
               <span className="process-number">01</span>
               <div><h3>Start with what you have</h3><p>Bring the details, bullet points, and half-finished drafts. The builder gives them a useful home.</p></div>
               <span className="process-mark">A</span>
             </article>
-            <article className="process-item">
+            <article className="process-item" data-reveal>
               <span className="process-number">02</span>
               <div><h3>Shape it while you see it</h3><p>Every edit is reflected in a live preview, so hierarchy, spacing, and story stay in view.</p></div>
               <span className="process-mark">B</span>
             </article>
-            <article className="process-item">
+            <article className="process-item" data-reveal>
               <span className="process-number">03</span>
               <div><h3>Leave with a document you own</h3><p>Choose a polished layout, export a PDF, and return to your work whenever you need it.</p></div>
               <span className="process-mark">C</span>
@@ -191,7 +216,7 @@ export default function HomePage() {
         </section>
 
         <section className="audiences-section" id="audiences">
-          <div className="audiences-heading">
+          <div className="audiences-heading" data-reveal>
             <p className="section-kicker"><span /> Who it&apos;s for</p>
             <h2>Built for every<br /><em>kind of work.</em></h2>
             <p className="audiences-intro">
@@ -201,7 +226,7 @@ export default function HomePage() {
           </div>
           <ul className="audience-grid">
             {AUDIENCES.map((audience, i) => (
-              <li className="audience-tile" key={audience.label}>
+              <li className="audience-tile" key={audience.label} data-reveal>
                 <span className="audience-index">{String(i + 1).padStart(2, '0')}</span>
                 <h3>{audience.label}</h3>
                 <p>{audience.detail}</p>
@@ -211,14 +236,14 @@ export default function HomePage() {
         </section>
 
         <section className="details-section" id="details">
-          <div className="details-intro">
+          <div className="details-intro" data-reveal>
             <p className="section-kicker"><span /> Built for the work behind the work</p>
             <h2>Small decisions.<br /><em>Serious difference.</em></h2>
           </div>
           <div className="detail-grid">
-            <article className="detail-card detail-card-dark"><span className="detail-index">01</span><h3>Autosave that stays out of your way.</h3><p>Your edits are saved as you build, so momentum does not depend on a save button.</p><div className="save-indicator"><span /> All changes saved</div></article>
-            <article className="detail-card"><span className="detail-index">02</span><h3>Preview with perspective.</h3><p>See the finished page as you work, not after you have filled out a long form.</p><div className="mini-layout"><i /><i /><i /><i /></div></article>
-            <article className="detail-card detail-card-wide" id="templates"><span className="detail-index">03</span><div><h3>Templates with restraint.</h3><p>Thoughtful document layouts put your experience first and give recruiters a clearer read.</p></div><div className="template-lines"><i /><i /><i /><i /><i /></div></article>
+            <article className="detail-card detail-card-dark" data-reveal><span className="detail-index">01</span><h3>Autosave that stays out of your way.</h3><p>Your edits are saved as you build, so momentum does not depend on a save button.</p><div className="save-indicator"><span /> All changes saved</div></article>
+            <article className="detail-card" data-reveal><span className="detail-index">02</span><h3>Preview with perspective.</h3><p>See the finished page as you work, not after you have filled out a long form.</p><div className="mini-layout"><i /><i /><i /><i /></div></article>
+            <article className="detail-card detail-card-wide" id="templates" data-reveal><span className="detail-index">03</span><div><h3>Templates with restraint.</h3><p>Thoughtful document layouts put your experience first and give recruiters a clearer read.</p></div><div className="template-lines"><i /><i /><i /><i /><i /></div></article>
           </div>
         </section>
 

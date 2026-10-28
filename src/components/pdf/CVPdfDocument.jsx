@@ -171,6 +171,25 @@ function createStyles(palette, layout) {
       fontSize: 8.6,
       lineHeight: 1.48,
     },
+    bulletList: {
+      marginTop: 3.5,
+    },
+    bulletRow: {
+      flexDirection: 'row',
+      marginBottom: 2.5,
+    },
+    bulletMark: {
+      width: 10,
+      color: palette.accent,
+      fontSize: 8.6,
+      lineHeight: 1.48,
+    },
+    bulletText: {
+      flex: 1,
+      color: palette.muted,
+      fontSize: 8.6,
+      lineHeight: 1.48,
+    },
     skills: {
       flexDirection: 'row',
       flexWrap: 'wrap',
@@ -545,6 +564,11 @@ function PdfItem({ type, item, styles, isSidebar }) {
 
   if (!content) return null;
 
+  const detailLines = content.detail
+    ? String(content.detail).split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
+    : [];
+  const asBullets = detailLines.length > 0 && (type === 'experience' || type === 'projects');
+
   return (
     <View style={styles.item} wrap={false}>
       <View style={styles.itemHead}>
@@ -552,7 +576,18 @@ function PdfItem({ type, item, styles, isSidebar }) {
         {content.date ? <Text style={styles.itemDate}>{content.date}</Text> : null}
       </View>
       {content.secondary ? <Text style={styles.itemSub}>{content.secondary}</Text> : null}
-      {content.detail ? <Text style={styles.itemDetail}>{content.detail}</Text> : null}
+      {asBullets ? (
+        <View style={styles.bulletList}>
+          {detailLines.map((line, i) => (
+            <View style={styles.bulletRow} key={i}>
+              <Text style={styles.bulletMark}>•</Text>
+              <Text style={styles.bulletText}>{line}</Text>
+            </View>
+          ))}
+        </View>
+      ) : content.detail ? (
+        <Text style={styles.itemDetail}>{content.detail}</Text>
+      ) : null}
     </View>
   );
 }

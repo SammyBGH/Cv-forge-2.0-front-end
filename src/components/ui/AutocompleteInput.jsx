@@ -86,7 +86,7 @@ export default function AutocompleteInput({
           {required && <span className="autocomplete-required">*</span>}
         </label>
       )}
-      <div className="autocomplete-wrapper" ref={inputRef}>
+      <div className="autocomplete-wrapper">
         <input
           ref={inputRef}
           type="text"

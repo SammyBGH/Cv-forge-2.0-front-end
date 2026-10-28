@@ -63,37 +63,41 @@
   box-shadow: 0 0 0 3px var(--error-bg);
 }
 
-.autocomplete-dropdown {
+.autocomplete-suggestions {
   position: absolute;
   top: calc(100% + var(--space-2));
   left: 0;
   right: 0;
-  max-height: 200px;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  max-height: 232px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   z-index: var(--z-50);
+  cursor: pointer;
   animation: slideDown var(--duration-200) var(--ease-out);
 }
 
-.autocomplete-option {
-  padding: var(--space-3) var(--space-4);
+.autocomplete-suggestion {
+  padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
+  line-height: var(--leading-snug);
   color: var(--text-primary);
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background var(--duration-150) var(--ease-out);
+  transition: background var(--duration-150) var(--ease-out),
+              color var(--duration-150) var(--ease-out);
 }
 
-.autocomplete-option:hover,
-.autocomplete-option.focused {
-  background: var(--bg-subtle);
-}
-
-.autocomplete-option.selected {
+.autocomplete-suggestion:hover,
+.autocomplete-suggestion-highlighted {
   background: var(--accent-light);
-  color: var(--accent);
+  color: var(--accent-dark);
 }
 
 .autocomplete-no-results {
@@ -118,20 +122,20 @@
 }
 
 /* Scrollbar styling */
-.autocomplete-dropdown::-webkit-scrollbar {
+.autocomplete-suggestions::-webkit-scrollbar {
   width: 6px;
 }
 
-.autocomplete-dropdown::-webkit-scrollbar-track {
+.autocomplete-suggestions::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.autocomplete-dropdown::-webkit-scrollbar-thumb {
+.autocomplete-suggestions::-webkit-scrollbar-thumb {
   background: var(--border-default);
   border-radius: var(--radius-sm);
 }
 
-.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+.autocomplete-suggestions::-webkit-scrollbar-thumb:hover {
   background: var(--border-strong);
 }
 

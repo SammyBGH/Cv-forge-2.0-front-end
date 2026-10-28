@@ -134,6 +134,16 @@
   line-height: 1.55;
   white-space: pre-wrap;
 }
+.cv-item-bullets {
+  margin: 6px 0 0;
+  padding-left: 15px;
+  list-style: disc;
+  color: var(--cv-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.cv-item-bullets li { margin-bottom: 3px; }
+.cv-item-bullets li::marker { color: var(--cv-accent); }
 .cv-skills-main {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
