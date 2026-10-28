@@ -1,6 +1,5 @@
 /* ========================================
-   APP SHELL - PREMIUM REDESIGN
-   Clean, functional, sophisticated
+   APP SHELL — REFINED NAVIGATION
    ======================================== */
 
 .shell {
@@ -8,57 +7,154 @@
   display: flex;
   flex-direction: column;
   background: var(--bg-base);
-  overflow-x: hidden;
   width: 100%;
 }
 
-/* CV Forge workspace skin - matching homepage navbar */
-.shell { background:var(--bg-base); }
-.shell-header { background:rgba(246,244,239,.9); border-bottom:1px solid rgba(29,36,52,.15); box-shadow:none; backdrop-filter:blur(16px); transition:background .35s ease,border-color .35s ease,backdrop-filter .35s ease; position:sticky; top:0; z-index:40; }
-.shell-header-inner { max-width:1240px; height:76px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; }
-.shell-brand { gap:22px; display:flex; align-items:center; }
-.brand-link { gap:10px; font-family:'DM Sans', sans-serif; font-size:16px; font-weight:700; letter-spacing:-.04em; color:#1d2434; text-decoration:none; display:flex; align-items:center; transition:opacity .2s ease; }
-.brand-link:hover { opacity:0.8; }
-.shell-mark { width:23px; height:23px; display:flex; align-items:flex-end; gap:3px; padding:4px; background:#1d2434; transform:rotate(-4deg); }
-.shell-mark i { display:block; width:3px; background:#dbe864; }
-.shell-mark i:nth-child(1){height:7px}
-.shell-mark i:nth-child(2){height:12px}
-.shell-mark i:nth-child(3){height:16px}
-.shell-crumb { padding-left:22px; color:#697083; font:500 10px 'DM Mono',monospace; letter-spacing:.08em; text-transform:uppercase; border-left:1px solid rgba(29,36,52,.15); }
-.shell-right { gap:12px; display:flex; align-items:center; }
-.shell-user { padding:4px 5px 4px 9px; border-radius:0; border-color:rgba(29,36,52,.15); background:transparent; transition:background .2s ease; display:flex; align-items:center; gap:8px; }
-.shell-user:hover { background:rgba(246,244,239,.5); }
-.avatar { width:27px; height:27px; border-radius:50%; object-fit:cover; }
-.shell-name { font-size:12px; color:#1d2434; font-weight:500; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.shell-signout { font:500 10px 'DM Mono',monospace; text-transform:uppercase; letter-spacing:.04em; color:#697083; background:transparent; border:none; cursor:pointer; padding:4px 8px; transition:color .2s ease; }
-.shell-signout:hover { color:#1d2434; }
-
-@media (max-width:768px){
-  .shell-header-inner{height:64px; padding:0 16px;}
-  .shell-mark{width:21px;height:21px}
-  .shell-user{border:none;padding:0;gap:6px;}
-  .shell-signout{display:none}
-  .shell-crumb{display:none}
-  .shell-name{display:none}
-  .shell-brand{gap:12px}
-  .brand-link{font-size:14px;}
+.shell-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-30);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
-@media (max-width:480px){
-  .shell-header-inner{height:60px; padding:0 12px;}
-  .shell-mark{width:20px;height:20px}
-  .brand-link strong{display:none;}
-  .shell-brand{gap:8px;}
-  .shell-user::after{content:'▼';font-size:10px;color:#697083;margin-left:4px;}
+.shell-header-inner {
+  max-width: var(--container-xl);
+  height: 64px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* ========================================
-   MAIN CONTENT
-   Clean, spacious, focused
-   ======================================== */
+.shell-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--brand-primary);
+  text-decoration: none;
+}
+
+.brand-link:hover {
+  opacity: 0.85;
+}
+
+.shell-mark {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-primary);
+  color: #ffffff;
+  border-radius: var(--radius-lg);
+}
+
+.shell-crumb {
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--border-default);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.shell-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.shell-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 4px 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-full);
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.shell-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shell-signout-btn {
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-150) ease;
+}
+
+.shell-signout-btn:hover {
+  color: #dc2626;
+  background: #fee2e2;
+}
 
 .shell-main {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .shell-header-inner {
+    padding: 0 var(--space-4);
+    height: 58px;
+  }
+
+  .shell-crumb {
+    display: none;
+  }
+
+  .shell-name {
+    display: none;
+  }
+
+  .shell-user {
+    padding: 3px 6px;
+  }
 }

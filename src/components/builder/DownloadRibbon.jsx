@@ -10,10 +10,10 @@ function formatRemaining(seconds) {
   return `${m}m ${s}s`;
 }
 
-const DownloadRibbon = forwardRef(({ status, onPay, payBusy, onExport }, ref) => {
+const DownloadRibbon = forwardRef(({ status, onPay, payBusy, onExport, isExporting = false }, ref) => {
   const chip = useMemo(() => {
-    if (!status?.allowed) return { tone: 'warn', label: 'Export locked — checkout required' };
-    return { tone: 'ok', label: `Free re-download window · ${formatRemaining(status.secondsRemaining)} left` };
+    if (!status?.allowed) return { tone: 'warn', label: 'Export locked — one-time checkout required' };
+    return { tone: 'ok', label: `Export unlocked · ${formatRemaining(status.secondsRemaining)} left in 25-day window` };
   }, [status]);
 
   return (
@@ -21,15 +21,20 @@ const DownloadRibbon = forwardRef(({ status, onPay, payBusy, onExport }, ref) =>
       <div className="ribbon-text">
         <strong>{chip.label}</strong>
         {status?.validUntil ? (
-          <span className="muted small"> · Until {new Date(status.validUntil).toLocaleString()}</span>
+          <span className="ribbon-date-hint"> · Valid until {new Date(status.validUntil).toLocaleDateString()}</span>
         ) : null}
       </div>
       <div className="ribbon-actions">
-        <button type="button" className="btn-secondary small" disabled={payBusy} onClick={onPay}>
-          {payBusy ? 'Redirecting…' : status?.allowed ? 'Extend access' : 'Unlock export'}
+        <button type="button" className="btn btn-secondary small" disabled={payBusy} onClick={onPay}>
+          {payBusy ? 'Opening checkout…' : status?.allowed ? 'Extend access window' : 'Unlock PDF Export (GHS 25)'}
         </button>
-        <button type="button" className="btn-primary small" onClick={onExport}>
-          Download PDF
+        <button
+          type="button"
+          className="btn btn-primary small download-pdf-btn"
+          disabled={isExporting}
+          onClick={onExport}
+        >
+          {isExporting ? 'Generating PDF…' : '⬇ Download PDF'}
         </button>
       </div>
     </div>

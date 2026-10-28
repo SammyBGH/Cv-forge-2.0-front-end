@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { pdf } from '@react-pdf/renderer';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useCVBuilder } from '../../context/CVBuilderContext.jsx';
@@ -8,43 +9,50 @@ import SectionFormRouter from './SectionFormRouter.jsx';
 import CVPreview from '../preview/CVPreview.jsx';
 import DownloadRibbon from './DownloadRibbon.jsx';
 import { CVPdfDocument } from '../pdf/CVPdfDocument.jsx';
+import { LAYOUTS, TEMPLATES, THEMES, languageLabel } from '../../utils/cvDesign.js';
+import { sectionByType } from '../preview/cvSelectors.js';
 import '../../styles/builder-new.css';
 
-const SECTION_KIND_LABELS = {
-  personal: 'Contact details',
-  summary: 'Summary',
-  experience: 'Experience',
-  education: 'Education',
-  skills: 'Skills',
-  projects: 'Projects',
-  certifications: 'Certificates',
-  languages: 'Languages',
-  custom: 'Section',
+const SECTION_META = {
+  personal: { label: 'Contact Details', icon: '👤', required: true },
+  summary: { label: 'Professional Summary', icon: '✍️', recommended: true },
+  experience: { label: 'Work Experience', icon: '💼', recommended: true },
+  education: { label: 'Education', icon: '🎓', recommended: true },
+  skills: { label: 'Skills', icon: '⚡', recommended: true },
+  projects: { label: 'Projects & Highlights', icon: '🚀', optional: true },
+  certifications: { label: 'Certifications', icon: '📜', optional: true },
+  languages: { label: 'Languages', icon: '🌐', optional: true },
+  custom: { label: 'Additional Information', icon: '📋', optional: true },
 };
 
 const TRANSLATION_CHOICES = [
-  { code: 'fr', label: 'French' },
-  { code: 'es', label: 'Spanish' },
-  { code: 'de', label: 'German' },
-  { code: 'ar', label: 'Arabic' },
-  { code: 'pt', label: 'Portuguese' },
+  { code: 'fr', label: 'French (Français)' },
+  { code: 'es', label: 'Spanish (Español)' },
+  { code: 'de', label: 'German (Deutsch)' },
+  { code: 'ar', label: 'Arabic (العربية)' },
+  { code: 'pt', label: 'Portuguese (Português)' },
   { code: 'zh', label: 'Chinese (Mandarin)' },
-  { code: 'tw', label: 'Twi' },
+  { code: 'it', label: 'Italian (Italiano)' },
+  { code: 'nl', label: 'Dutch (Nederlands)' },
+  { code: 'tw', label: 'Twi (Akan)' },
   { code: 'ha', label: 'Hausa' },
-  { code: '__custom__', label: 'Other — type below' },
+  { code: '__custom__', label: 'Other — type language below' },
 ];
 
 export default function BuilderWorkspace({ headerLeft }) {
   const { user } = useAuth();
   const { addToast } = useToast();
-  const { cv, loading, error, updateCv, reorderSections, flushSave } = useCVBuilder();
+  const { cv, loading, error, saving, updateCv, reorderSections, flushSave } = useCVBuilder();
   const [zoom, setZoom] = useState(0.92);
   const [downloadStatus, setDownloadStatus] = useState({ allowed: false, secondsRemaining: 0, validUntil: null });
   const [payBusy, setPayBusy] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [translateLang, setTranslateLang] = useState('fr');
   const [translateOther, setTranslateOther] = useState('');
   const [showFloatingDownload, setShowFloatingDownload] = useState(false);
-  
+  const [openSection, setOpenSection] = useState('personal');
+  const [payConfig, setPayConfig] = useState({ translationPriceGhs: 6, translationAvailable: true });
+
   const downloadRibbonRef = useRef(null);
 
   const sortedSections = useMemo(() => {
@@ -68,21 +76,21 @@ export default function BuilderWorkspace({ headerLeft }) {
     return () => clearInterval(id);
   }, [refreshDownload]);
 
-  // Scroll-based detection for floating download button
+  useEffect(() => {
+    api.paymentConfig().then(setPayConfig).catch(() => {});
+  }, []);
+
+  // Scroll detection for floating download action
   useEffect(() => {
     const handleScroll = () => {
       const ribbon = downloadRibbonRef.current;
       if (!ribbon) return;
-      
       const rect = ribbon.getBoundingClientRect();
       const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
       setShowFloatingDownload(!isVisible);
     };
 
-    // Initial check
     handleScroll();
-
-    // Add scroll listener with throttle
     let ticking = false;
     const throttledScroll = () => {
       if (!ticking) {
@@ -119,14 +127,17 @@ export default function BuilderWorkspace({ headerLeft }) {
 
   async function handleExportPdf() {
     if (!cv) return;
+    setExporting(true);
     try {
       await api.authorizeDownload(cv._id);
     } catch (e) {
       if (e.status === 402) {
         addToast('Complete checkout to unlock PDF export.', 'warning');
+        setExporting(false);
         return;
       }
-      addToast(e.message || 'Authorization failed', 'error');
+      addToast(e.message || 'Authorization check failed', 'error');
+      setExporting(false);
       return;
     }
 
@@ -135,13 +146,15 @@ export default function BuilderWorkspace({ headerLeft }) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${cv.title || 'cv'}.pdf`;
+      a.download = `${cv.title || 'CV'}.pdf`;
       document.body.appendChild(a);
       a.click();
       URL.revokeObjectURL(url);
-      addToast('PDF downloaded successfully', 'success');
+      addToast('PDF downloaded successfully!', 'success');
     } catch (e) {
       addToast(e.message || 'PDF export failed', 'error');
+    } finally {
+      setExporting(false);
     }
   }
 
@@ -173,6 +186,10 @@ export default function BuilderWorkspace({ headerLeft }) {
     );
   }
 
+  const currentTemplate = cv.templateId || 'modern-split';
+  const currentTheme = cv.themeId || 'light';
+  const currentLayout = cv.layoutId || 'two-column';
+
   return (
     <div className="builder-shell">
       <DownloadRibbon
@@ -181,165 +198,293 @@ export default function BuilderWorkspace({ headerLeft }) {
         onPay={() => startCheckout('download')}
         payBusy={payBusy}
         onExport={handleExportPdf}
+        isExporting={exporting}
       />
 
+      {/* Linked Translation Banners */}
+      {cv.sourceCvId && (
+        <div className="source-cv-banner">
+          <span className="banner-icon">🌐</span>
+          <span>
+            You are editing a translated copy ({languageLabel(cv.locale)}). Your original English CV is saved separately.
+          </span>
+          <Link to={`/builder/${cv.sourceCvId}`} className="banner-link">
+            ← View Original CV
+          </Link>
+        </div>
+      )}
+
+      {cv.translationCvIds?.length > 0 && (
+        <div className="translation-list-banner">
+          <span className="banner-icon">🌍</span>
+          <span>Translations of this CV:</span>
+          <div className="banner-chips">
+            {cv.translationCvIds.map((tId, idx) => (
+              <Link key={tId} to={`/builder/${tId}`} className="banner-chip-link">
+                Copy #{idx + 1} →
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Top toolbar */}
       <header className="builder-topbar">
         <div className="builder-topbar-left">{headerLeft}</div>
-        <input
-          className="title-input"
-          value={cv.title}
-          onChange={(e) => updateCv({ title: e.target.value })}
-          aria-label="CV title"
-        />
-        <div className="builder-topbar-right">
-          <label className="inline-control">
-            Template
-            <select
-              value={cv.templateId}
-              onChange={(e) => updateCv({ templateId: e.target.value })}
-            >
-              <option value="modern-split">Modern split</option>
-              <option value="minimal">Minimal</option>
-              <option value="accent-header">Executive header</option>
-            </select>
-          </label>
-          <label className="inline-control">
-            Theme
-            <select value={cv.themeId} onChange={(e) => updateCv({ themeId: e.target.value })}>
-              <option value="light">Light</option>
-              <option value="slate">Slate</option>
-              <option value="paper">Paper</option>
-            </select>
-          </label>
-          <label className="inline-control">
-            Layout
-            <select value={cv.layoutId} onChange={(e) => updateCv({ layoutId: e.target.value })}>
-              <option value="two-column">Two column</option>
-              <option value="single">Single column</option>
-            </select>
-          </label>
+
+        <div className="title-edit-wrap">
+          <input
+            className="title-input"
+            value={cv.title}
+            onChange={(e) => updateCv({ title: e.target.value })}
+            aria-label="CV title"
+            placeholder="Untitled CV"
+          />
+          <span className={`save-chip ${saving ? 'is-saving' : ''}`}>
+            {saving ? 'Saving…' : 'Saved'}
+          </span>
+        </div>
+
+        <div className="builder-topbar-controls">
+          {/* Template Selector */}
+          <div className="control-group">
+            <span className="control-group-label">Template</span>
+            <div className="segmented-control" role="radiogroup" aria-label="Template selection">
+              {TEMPLATES.map((tmpl) => (
+                <button
+                  key={tmpl.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={currentTemplate === tmpl.id}
+                  className={`segmented-btn ${currentTemplate === tmpl.id ? 'is-selected' : ''}`}
+                  onClick={() => updateCv({ templateId: tmpl.id })}
+                  title={tmpl.description}
+                >
+                  {tmpl.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Theme Selector */}
+          <div className="control-group">
+            <span className="control-group-label">Theme</span>
+            <div className="theme-swatches-group" role="radiogroup" aria-label="Theme selection">
+              {THEMES.map((thm) => (
+                <button
+                  key={thm.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={currentTheme === thm.id}
+                  className={`theme-swatch-btn ${currentTheme === thm.id ? 'is-selected' : ''}`}
+                  onClick={() => updateCv({ themeId: thm.id })}
+                  title={`${thm.label} — ${thm.description}`}
+                >
+                  <span className="swatch-dot" style={{ backgroundColor: thm.swatch }} />
+                  <span className="swatch-label">{thm.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Layout Selector */}
+          <div className="control-group">
+            <span className="control-group-label">Layout</span>
+            <div className="segmented-control" role="radiogroup" aria-label="Layout selection">
+              {LAYOUTS.map((lay) => (
+                <button
+                  key={lay.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={currentLayout === lay.id}
+                  className={`segmented-btn ${currentLayout === lay.id ? 'is-selected' : ''}`}
+                  onClick={() => updateCv({ layoutId: lay.id })}
+                  title={lay.description}
+                >
+                  {lay.id === 'two-column' ? '◫ 2 Columns' : '▭ 1 Column'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Zoom controls */}
           <div className="zoom-cluster">
-            <button type="button" className="btn-ghost small" onClick={() => setZoom((z) => Math.max(0.55, z - 0.08))}>
+            <button
+              type="button"
+              className="btn-ghost small zoom-btn"
+              onClick={() => setZoom((z) => Math.max(0.55, z - 0.08))}
+              title="Zoom out"
+            >
               −
             </button>
             <span className="zoom-label">{Math.round(zoom * 100)}%</span>
-            <button type="button" className="btn-ghost small" onClick={() => setZoom((z) => Math.min(1.2, z + 0.08))}>
+            <button
+              type="button"
+              className="btn-ghost small zoom-btn"
+              onClick={() => setZoom((z) => Math.min(1.25, z + 0.08))}
+              title="Zoom in"
+            >
               +
             </button>
           </div>
         </div>
       </header>
 
+      {/* Main Split Layout */}
       <div className="builder-split">
         <aside className="builder-editor-pane">
           <div className="pane-header">
-            <h2 id="workspace-heading">Your CV sections</h2>
-            <p className="muted small" id="workspace-desc">
-              Changes save automatically. Fill each section in any order — use the arrows to move sections up or down on your CV.
-            </p>
+            <div className="pane-header-copy">
+              <h2 id="workspace-heading">Sections & Content</h2>
+              <p className="muted small" id="workspace-desc">
+                Complete your details below. Everything autosaves instantly as you type.
+              </p>
+            </div>
+            <Completeness cv={cv} />
           </div>
 
-          <div className="translate-row" role="region" aria-labelledby="translate-heading">
-            <h3 id="translate-heading" className="translate-heading">
-              Optional: another language
-            </h3>
-            <p className="field-hint translate-intro">
-              After a separate small payment, we create a second copy of this CV in the language you choose. Your original stays here for editing.
-            </p>
-            <div className="translate-controls">
-              <label htmlFor="translate-lang" className="translate-label">
-                Language for the new copy
-              </label>
-              <div className="translate-inline">
-                <select
-                  id="translate-lang"
-                  className="input translate-select"
-                  value={translateLang}
-                  onChange={(e) => setTranslateLang(e.target.value)}
-                  disabled={payBusy}
-                >
-                  {TRANSLATION_CHOICES.map((opt) => (
-                    <option key={opt.code} value={opt.code}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-                {translateLang === '__custom__' ? (
-                  <input
-                    type="text"
-                    className="input translate-other"
-                    aria-label="Type the language"
-                    placeholder="e.g. Korean, Ga, Yoruba"
-                    value={translateOther}
-                    disabled={payBusy}
-                    onChange={(e) => setTranslateOther(e.target.value)}
-                  />
-                ) : null}
+          {/* Translation Action Card */}
+          <div className="translate-card" role="region" aria-labelledby="translate-heading">
+            <div className="translate-card-head">
+              <div>
+                <h3 id="translate-heading" className="translate-heading">
+                  🌐 Translate into another language
+                </h3>
+                <p className="translate-intro">
+                  Get a professionally localized copy for international applications. Your original CV remains untouched.
+                </p>
               </div>
+              <span className="translate-price-pill">GHS {payConfig.translationPriceGhs || 6}</span>
+            </div>
+
+            <div className="translate-form-row">
+              <select
+                id="translate-lang"
+                className="input translate-select"
+                value={translateLang}
+                onChange={(e) => setTranslateLang(e.target.value)}
+                disabled={payBusy}
+                aria-label="Target language"
+              >
+                {TRANSLATION_CHOICES.map((opt) => (
+                  <option key={opt.code} value={opt.code}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+
+              {translateLang === '__custom__' && (
+                <input
+                  type="text"
+                  className="input translate-other"
+                  aria-label="Type target language"
+                  placeholder="e.g. Japanese, Russian, Swahili"
+                  value={translateOther}
+                  disabled={payBusy}
+                  onChange={(e) => setTranslateOther(e.target.value)}
+                />
+              )}
+
               <button
                 type="button"
-                className="btn-secondary small"
+                className="btn btn-secondary small translate-action-btn"
                 disabled={payBusy}
                 onClick={() => {
                   const targetLanguage =
                     translateLang === '__custom__' ? translateOther.trim() : translateLang;
                   if (!targetLanguage) {
-                    addToast('Choose a language from the list or type one under "Other".', 'warning');
+                    addToast('Please select or specify a target language.', 'warning');
                     return;
                   }
                   startCheckout('translation', { targetLanguage });
                 }}
               >
-                {payBusy ? 'Opening checkout…' : 'Continue to translation checkout'}
+                {payBusy ? 'Opening checkout…' : 'Pay & Translate'}
               </button>
             </div>
-            <p className="muted tiny translate-footnote">
-              Translation uses your paid draft workflow — full machine translation will plug in here later; today it prepares a linked copy you can refine.
-            </p>
           </div>
 
-          <ol className="section-order" aria-labelledby="workspace-heading" aria-describedby="workspace-desc">
-            {sortedSections.map((s) => (
-              <li key={s.key} className="section-order-row">
-                <div className="section-order-meta">
-                  <span className="pill subtle">{SECTION_KIND_LABELS[s.type] || 'Section'}</span>
-                  <div className="reorder">
+          {/* Section Accordions */}
+          <ol className="section-order" aria-labelledby="workspace-heading">
+            {sortedSections.map((s) => {
+              const expanded = openSection === s.key || openSection === s.type;
+              const meta = SECTION_META[s.type] || { label: 'Custom Section', icon: '📄' };
+              const isFilled = isSectionCompleted(s);
+
+              return (
+                <li key={s.key} className={`section-order-row ${expanded ? 'is-open' : ''}`}>
+                  <div className="section-order-meta">
                     <button
                       type="button"
-                      className="btn-ghost tiny"
-                      onClick={() => moveSection(s.key, -1)}
-                      aria-label={`Move ${SECTION_KIND_LABELS[s.type] || 'section'} up`}
+                      className="section-toggle"
+                      aria-expanded={expanded}
+                      onClick={() => setOpenSection(expanded ? '' : s.key)}
                     >
-                      ↑
+                      <span className="section-icon-badge">{meta.icon}</span>
+                      <span className="section-title-label">{meta.label}</span>
+                      {isFilled && <span className="section-filled-badge" title="Completed">✓</span>}
+                      <span className="section-toggle-action">{expanded ? 'Close' : 'Open'}</span>
                     </button>
-                    <button
-                      type="button"
-                      className="btn-ghost tiny"
-                      onClick={() => moveSection(s.key, 1)}
-                      aria-label={`Move ${SECTION_KIND_LABELS[s.type] || 'section'} down`}
-                    >
-                      ↓
-                    </button>
+
+                    <div className="reorder-group">
+                      <button
+                        type="button"
+                        className="btn-reorder"
+                        onClick={() => moveSection(s.key, -1)}
+                        aria-label={`Move ${meta.label} up`}
+                        title="Move section up"
+                      >
+                        ▲
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-reorder"
+                        onClick={() => moveSection(s.key, 1)}
+                        aria-label={`Move ${meta.label} down`}
+                        title="Move section down"
+                      >
+                        ▼
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <SectionFormRouter section={s} cv={cv} />
-              </li>
-            ))}
+
+                  {expanded ? (
+                    <div className="section-content-wrap">
+                      <SectionFormRouter section={s} cv={cv} />
+                    </div>
+                  ) : (
+                    <SectionPreviewHint section={s} />
+                  )}
+                </li>
+              );
+            })}
           </ol>
         </aside>
 
+        {/* Live Preview Pane */}
         <section className="builder-preview-pane">
           <div className="preview-toolbar">
-            <h2>Live preview</h2>
-            <span className="muted small">Updates as you type</span>
+            <div className="preview-toolbar-title">
+              <h2>Live Document Preview</h2>
+              <span className="live-status-dot" aria-hidden="true" />
+              <span className="live-status-text">Updates live</span>
+            </div>
+            <div className="preview-toolbar-badges">
+              <span className="preview-badge">{currentTemplate}</span>
+              <span className="preview-badge">{currentTheme}</span>
+              <span className="preview-badge">{currentLayout}</span>
+            </div>
           </div>
-          <div className="preview-stage" style={{ transform: `scale(${zoom})` }}>
-            <CVPreview cv={cv} />
+
+          <div className="preview-stage-container">
+            <div className="preview-stage" style={{ transform: `scale(${zoom})` }}>
+              <CVPreview cv={cv} />
+            </div>
           </div>
         </section>
       </div>
 
-      {/* Floating download button - appears when ribbon is scrolled out of view */}
+      {/* Floating Download Button on scroll */}
       <div className={`floating-download ${showFloatingDownload ? 'is-visible' : ''}`}>
         <button
           type="button"
@@ -348,11 +493,69 @@ export default function BuilderWorkspace({ headerLeft }) {
           aria-label="Scroll to download options"
           title="Scroll to download options"
         >
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M8 3v8M4 9l4 4 4-4M3 13h10" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M8 3v8M4 9l4 4 4-4M3 13h10" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>
     </div>
   );
+}
+
+function isSectionCompleted(section) {
+  if (section.type === 'personal') {
+    return Boolean(section.data?.fullName && section.data?.email);
+  }
+  if (section.type === 'summary') {
+    return Boolean((section.data?.html || '').trim().length > 10);
+  }
+  return Array.isArray(section.data?.items) && section.data.items.length > 0;
+}
+
+function Completeness({ cv }) {
+  const personal = sectionByType(cv, 'personal')?.data || {};
+  const summary = sectionByType(cv, 'summary')?.data || {};
+  const experience = sectionByType(cv, 'experience')?.data?.items || [];
+  const education = sectionByType(cv, 'education')?.data?.items || [];
+  const skills = sectionByType(cv, 'skills')?.data?.items || [];
+
+  const checks = [
+    { ok: Boolean(personal.fullName && personal.email), label: 'Contact' },
+    { ok: Boolean((summary.html || '').trim()), label: 'Summary' },
+    { ok: experience.length > 0, label: 'Experience' },
+    { ok: education.length > 0, label: 'Education' },
+    { ok: skills.length > 0, label: 'Skills' },
+  ];
+  const done = checks.filter((c) => c.ok).length;
+
+  return (
+    <div className="completeness-bar-wrap" aria-label="CV completion status">
+      <div className="completeness-meta">
+        <span className="completeness-score">
+          {done} of {checks.length} essentials completed
+        </span>
+        <span className="completeness-pct">{Math.round((done / checks.length) * 100)}%</span>
+      </div>
+      <div className="completeness-track">
+        <div
+          className="completeness-fill"
+          style={{ width: `${(done / checks.length) * 100}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function SectionPreviewHint({ section }) {
+  const count = Array.isArray(section?.data?.items) ? section.data.items.length : 0;
+  const summaryLen = (section?.data?.html || '').trim().length;
+  let note = 'Empty';
+  if (section?.type === 'personal') {
+    note = section.data?.fullName ? section.data.fullName : 'Add contact details';
+  } else if (section?.type === 'summary') {
+    note = summaryLen ? `${summaryLen} characters` : 'Brief paragraph';
+  } else if (count) {
+    note = `${count} ${count === 1 ? 'entry' : 'entries'}`;
+  }
+  return <p className="section-preview-hint">{note}</p>;
 }

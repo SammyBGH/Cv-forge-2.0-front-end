@@ -1,221 +1,234 @@
 import { useId } from 'react';
-
 import { useCVBuilder } from '../../../context/CVBuilderContext.jsx';
-
 import { isFieldLocked } from '../../../utils/locks.js';
-
 import AutocompleteInput from '../../ui/AutocompleteInput.jsx';
 
-
-
-const HEADLINE_SUGGESTIONS = [
-  'Recent graduate seeking entry-level role',
-  'Customer-focused professional',
-  'Detail-oriented team member',
-  'Motivated student seeking internship',
-  'Reliable worker with flexible schedule',
-  'Organized administrator',
-  'Creative problem-solver',
-  'Bilingual customer support professional',
+const QUICK_HEADLINES = [
+  'Software Engineer',
+  'Frontend Developer',
+  'Product Designer',
+  'Marketing Specialist',
+  'Customer Success Lead',
+  'Operations Coordinator',
+  'Recent Graduate (Business Admin)',
+  'Registered Nurse',
+  'Financial Analyst',
+  'Project Manager',
 ];
 
+const COMMON_LOCATIONS = [
+  'Accra, Ghana',
+  'Kumasi, Ghana',
+  'Remote (Worldwide)',
+  'London, UK',
+  'Lagos, Nigeria',
+];
 
-
-export default function PersonalEditor({ section, cv }) {
-
-  const { updateSection } = useCVBuilder();
-
-  const rid = useId();
-
-  const d = section.data || {};
-
-
-
-  function patch(field, value) {
-
-    updateSection(section.key, { data: { ...d, [field]: value } });
-
-  }
-
-
-
-  const fields = [
-
-    {
-
-      key: 'fullName',
-
-      label: 'Full name',
-
-      placeholder: 'Your name',
-
-      required: true,
-
-    },
-
-    {
-
-      key: 'headline',
-
-      label: 'Headline',
-
-      placeholder: 'e.g. Biology graduate · Retail experience',
-
-      suggestions: HEADLINE_SUGGESTIONS,
-
-    },
-
-    {
-
-      key: 'email',
-
-      label: 'Email',
-
-      placeholder: 'you@example.com',
-
-      inputMode: 'email',
-
-      autoComplete: 'email',
-
-      required: true,
-
-    },
-
-    {
-
-      key: 'phone',
-
-      label: 'Phone',
-
-      placeholder: 'Your phone number',
-
-      inputMode: 'tel',
-
-      autoComplete: 'tel',
-
-    },
-
-    {
-
-      key: 'location',
-
-      label: 'City / region',
-
-      placeholder: 'e.g. Accra · Remote',
-
-    },
-
-    {
-
-      key: 'website',
-
-      label: 'Website or portfolio',
-
-      placeholder: 'https://…',
-
-      inputMode: 'url',
-
-      autoComplete: 'url',
-
-    },
-
-    {
-
-      key: 'linkedin',
-
-      label: 'LinkedIn or professional profile',
-
-      placeholder: 'Profile URL',
-
-      inputMode: 'url',
-
-    },
-
-    ];
-
-
+function Field({ f, d, locked, baseId, patch }) {
+  const badgeClass = f.required
+    ? 'field-required-badge'
+    : f.recommended
+    ? 'field-recommended-badge'
+    : 'field-optional-badge';
+  const badgeLabel = f.required
+    ? 'Required'
+    : f.recommended
+    ? 'Recommended'
+    : 'Optional';
 
   return (
+    <div className="field">
+      <div className="field-label-wrap">
+        <label className="field-label" htmlFor={baseId}>
+          {f.label}
+        </label>
+        <span className={`field-badge ${badgeClass}`}>{badgeLabel}</span>
+        {locked ? <span className="lock-tag">🔒 Locked after export</span> : null}
+      </div>
 
-    <div className="field-grid" role="group" aria-label="Contact and headline">
-
-      {fields.map((f) => {
-
-        const locked = isFieldLocked(cv, section.key, f.key);
-
-        const baseId = `${rid}-${f.key}`;
-
-
-
-        return (
-
-          <div key={f.key} className="field">
-
-            <label className="field-label" htmlFor={baseId}>
-
-              {f.label}
-
-              {f.required && <span className="field-required">*</span>}
-
-              {locked ? <span className="lock-tag">Locked after paid export</span> : null}
-
-            </label>
-
-            {f.suggestions && !locked ? (
-
-              <AutocompleteInput
-
-                id={baseId}
-
-                value={d[f.key] || ''}
-
-                onChange={(v) => patch(f.key, v)}
-
-                suggestions={f.suggestions}
-
-                placeholder={f.placeholder}
-
-                disabled={locked}
-
-                required={f.required}
-
-              />
-
-            ) : (
-
-              <input
-
-                id={baseId}
-
-                className="input"
-
-                type="text"
-
-                placeholder={f.placeholder}
-
-                inputMode={f.inputMode}
-
-                autoComplete={f.autoComplete}
-
-                value={d[f.key] || ''}
-
-                disabled={locked}
-
-                onChange={(e) => patch(f.key, e.target.value)}
-
-              />
-
-            )}
-
-          </div>
-
-        );
-
-      })}
-
+      {f.suggestions && !locked ? (
+        <AutocompleteInput
+          id={baseId}
+          value={d[f.key] || ''}
+          onChange={(v) => patch(f.key, v)}
+          suggestions={f.suggestions}
+          placeholder={f.placeholder}
+          disabled={locked}
+          required={f.required}
+        />
+      ) : (
+        <input
+          id={baseId}
+          className="input"
+          type={f.inputType || 'text'}
+          placeholder={f.placeholder}
+          inputMode={f.inputMode}
+          autoComplete={f.autoComplete}
+          value={d[f.key] || ''}
+          disabled={locked}
+          required={f.required}
+          onChange={(e) => patch(f.key, e.target.value)}
+        />
+      )}
+      {f.hint ? <span className="field-hint">{f.hint}</span> : null}
     </div>
-
   );
-
 }
 
+export default function PersonalEditor({ section, cv }) {
+  const { updateSection } = useCVBuilder();
+  const rid = useId();
+  const d = section.data || {};
+
+  function patch(field, value) {
+    updateSection(section.key, { data: { ...d, [field]: value } });
+  }
+
+  const identity = [
+    {
+      key: 'fullName',
+      label: 'Full Name',
+      placeholder: 'e.g. Kwame Mensah',
+      required: true,
+      autoComplete: 'name',
+      hint: 'Your official name as it should appear on your CV',
+    },
+    {
+      key: 'headline',
+      label: 'Professional Headline',
+      placeholder: 'e.g. Full Stack Developer · 3+ Years Experience',
+      recommended: true,
+      suggestions: QUICK_HEADLINES,
+      hint: 'A concise summary of your current focus or target role',
+    },
+  ];
+
+  const contact = [
+    {
+      key: 'email',
+      label: 'Email Address',
+      placeholder: 'kwame@example.com',
+      inputMode: 'email',
+      inputType: 'email',
+      autoComplete: 'email',
+      required: true,
+      hint: 'Employers will use this to reach out with interview invites',
+    },
+    {
+      key: 'phone',
+      label: 'Phone Number',
+      placeholder: '+233 24 123 4567',
+      inputMode: 'tel',
+      inputType: 'tel',
+      autoComplete: 'tel',
+      recommended: true,
+      hint: 'Include country code if applying internationally',
+    },
+    {
+      key: 'location',
+      label: 'City & Country',
+      placeholder: 'e.g. Accra, Ghana or Remote',
+      autoComplete: 'address-level2',
+      recommended: true,
+      suggestions: COMMON_LOCATIONS,
+      hint: 'City and country or Remote preference is sufficient',
+    },
+  ];
+
+  const links = [
+    {
+      key: 'website',
+      label: 'Portfolio or Personal Website',
+      placeholder: 'https://kwamemensah.dev',
+      inputMode: 'url',
+      inputType: 'url',
+      autoComplete: 'url',
+      hint: 'Optional link to your projects, GitHub, or online portfolio',
+    },
+    {
+      key: 'linkedin',
+      label: 'LinkedIn Profile',
+      placeholder: 'linkedin.com/in/kwame-mensah',
+      inputMode: 'url',
+      inputType: 'url',
+      hint: 'Optional link to your professional networking profile',
+    },
+  ];
+
+  return (
+    <div className="personal-editor" role="group" aria-label="Personal details and contact">
+      <div className="form-cluster">
+        <div className="form-cluster-header">
+          <h4 className="form-cluster-title">Identity & Role</h4>
+          <p className="form-cluster-desc">The headline appears right below your name on every page.</p>
+        </div>
+        <div className="field-grid">
+          {identity.map((f) => (
+            <Field
+              key={f.key}
+              f={f}
+              d={d}
+              locked={isFieldLocked(cv, section.key, f.key)}
+              baseId={`${rid}-${f.key}`}
+              patch={patch}
+            />
+          ))}
+        </div>
+
+        {!d.headline && (
+          <div className="suggestion-chips-row">
+            <span className="suggestion-chips-label">Popular headlines:</span>
+            {QUICK_HEADLINES.slice(0, 5).map((hl) => (
+              <button
+                key={hl}
+                type="button"
+                className="chip-btn"
+                onClick={() => patch('headline', hl)}
+              >
+                + {hl}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="form-cluster">
+        <div className="form-cluster-header">
+          <h4 className="form-cluster-title">Contact Information</h4>
+          <p className="form-cluster-desc">Ensure your email and phone are active so recruiters can connect.</p>
+        </div>
+        <div className="field-grid">
+          {contact.map((f) => (
+            <Field
+              key={f.key}
+              f={f}
+              d={d}
+              locked={isFieldLocked(cv, section.key, f.key)}
+              baseId={`${rid}-${f.key}`}
+              patch={patch}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="form-cluster">
+        <div className="form-cluster-header">
+          <h4 className="form-cluster-title">Online Presence & Links</h4>
+          <p className="form-cluster-desc">Optional links to showcase your live work, code, or recommendations.</p>
+        </div>
+        <div className="field-grid">
+          {links.map((f) => (
+            <Field
+              key={f.key}
+              f={f}
+              d={d}
+              locked={isFieldLocked(cv, section.key, f.key)}
+              baseId={`${rid}-${f.key}`}
+              patch={patch}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

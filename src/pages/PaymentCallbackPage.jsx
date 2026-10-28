@@ -8,6 +8,7 @@ export default function PaymentCallbackPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('working');
   const [message, setMessage] = useState('Confirming payment…');
+  const [retryCvId, setRetryCvId] = useState(null);
 
   useEffect(() => {
     const reference = params.get('reference') || params.get('trxref');
@@ -25,11 +26,32 @@ export default function PaymentCallbackPage() {
           setMessage('Session expired. Sign in again, then reopen this link from your email/receipt if needed.');
           return;
         }
-        await api.verifyPayment(reference);
+        const result = await api.verifyPayment(reference);
         if (cancelled) return;
+
+        if (result.type === 'translation') {
+          if (result.translationStatus === 'failed') {
+            setStatus('error');
+            setRetryCvId(result.cvId);
+            setMessage(
+              result.translationError ||
+                'Payment succeeded, but translation did not finish. You can retry from the original CV without paying again.'
+            );
+            return;
+          }
+          setStatus('ok');
+          setMessage('Payment confirmed. Opening your translated CV…');
+          const next = result.translationCvId || result.cvId;
+          setTimeout(() => navigate(next ? `/builder/${next}` : '/dashboard', { replace: true }), 1400);
+          return;
+        }
+
         setStatus('ok');
         setMessage('Payment confirmed. Taking you to your CV…');
-        setTimeout(() => navigate('/dashboard', { replace: true }), 1600);
+        setTimeout(
+          () => navigate(result.cvId ? `/builder/${result.cvId}` : '/dashboard', { replace: true }),
+          1400
+        );
       } catch (e) {
         if (cancelled) return;
         setStatus('error');
@@ -46,13 +68,40 @@ export default function PaymentCallbackPage() {
     };
   }, [params, navigate]);
 
+  async function retryTranslation() {
+    if (!retryCvId) return;
+    setStatus('working');
+    setMessage('Retrying translation…');
+    try {
+      const data = await api.retryTranslation(retryCvId);
+      if (data?.cv?._id) {
+        setStatus('ok');
+        setMessage('Translation ready. Opening the new copy…');
+        setTimeout(() => navigate(`/builder/${data.cv._id}`, { replace: true }), 1200);
+      } else {
+        setStatus('error');
+        setMessage(data?.job?.errorMessage || 'Translation still failed. Try again later.');
+      }
+    } catch (e) {
+      setStatus('error');
+      setMessage(e.message || 'Retry failed');
+    }
+  }
+
   return (
     <div className="pay-callback">
       <div className="pay-callback-card">
-        <div className={`pay-status-mark status-${status}`} aria-hidden="true"><span /></div>
+        <div className={`pay-status-mark status-${status}`} aria-hidden="true">
+          <span />
+        </div>
         <p className="pay-kicker">CV Forge · Payment status</p>
         <h1>{status === 'ok' ? 'Success' : status === 'error' ? 'Something went wrong' : 'Processing'}</h1>
         <p>{message}</p>
+        {retryCvId ? (
+          <button type="button" className="btn-primary" onClick={retryTranslation}>
+            Retry translation
+          </button>
+        ) : null}
         <Link className="btn-secondary" to="/dashboard">
           Back to dashboard
         </Link>

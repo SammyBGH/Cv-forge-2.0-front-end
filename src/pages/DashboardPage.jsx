@@ -5,6 +5,7 @@ import { useToast } from '../context/ToastContext.jsx';
 import { api } from '../api/client.js';
 import AppShell from '../components/layout/AppShell.jsx';
 import Modal from '../components/ui/Modal.jsx';
+import { TEMPLATES, THEMES, languageLabel } from '../utils/cvDesign.js';
 import '../styles/dashboard-new.css';
 import '../styles/animations.css';
 
@@ -15,6 +16,7 @@ export default function DashboardPage() {
   const [cvs, setCvs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [createModal, setCreateModal] = useState({ isOpen: false, title: '', templateId: 'modern-split' });
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, cvId: null, cvTitle: '' });
 
   async function refresh() {
@@ -31,14 +33,20 @@ export default function DashboardPage() {
     refresh();
   }, []);
 
-  async function handleCreate() {
+  async function handleCreate(e) {
+    if (e) e.preventDefault();
     setCreating(true);
     try {
-      const data = await api.createCv({ title: 'New CV' });
-      addToast('CV created successfully', 'success');
+      const title = createModal.title.trim() || 'Untitled CV';
+      const data = await api.createCv({
+        title,
+        templateId: createModal.templateId,
+      });
+      setCreateModal({ isOpen: false, title: '', templateId: 'modern-split' });
+      addToast('New CV created!', 'success');
       navigate(`/builder/${data.cv._id}`);
-    } catch (e) {
-      addToast(e.message || 'Failed to create CV', 'error');
+    } catch (err) {
+      addToast(err.message || 'Failed to create CV', 'error');
     } finally {
       setCreating(false);
     }
@@ -50,8 +58,8 @@ export default function DashboardPage() {
       await refresh();
       addToast('CV duplicated successfully', 'success');
       navigate(`/builder/${data.cv._id}`);
-    } catch (e) {
-      addToast(e.message || 'Failed to duplicate CV', 'error');
+    } catch (err) {
+      addToast(err.message || 'Failed to duplicate CV', 'error');
     }
   }
 
@@ -62,13 +70,13 @@ export default function DashboardPage() {
   async function confirmDelete() {
     const { cvId } = deleteModal;
     setDeleteModal({ isOpen: false, cvId: null, cvTitle: '' });
-    
+
     try {
       await api.deleteCv(cvId);
       await refresh();
       addToast('CV deleted successfully', 'success');
-    } catch (e) {
-      addToast(e.message || 'Failed to delete CV', 'error');
+    } catch (err) {
+      addToast(err.message || 'Failed to delete CV', 'error');
     }
   }
 
@@ -78,82 +86,195 @@ export default function DashboardPage() {
       user={user}
       onLogout={logout}
       actions={
-        <button type="button" className="btn btn-primary" onClick={handleCreate} disabled={creating}>
-          {creating ? 'Creating…' : 'New CV'}
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => setCreateModal({ isOpen: true, title: 'My New CV', templateId: 'modern-split' })}
+        >
+          + Create New CV
         </button>
       }
     >
       <section className="dash-wrap">
         <header className="dash-header">
-          <div>
-            <span className="dash-eyebrow">Your workspace</span>
-            <h2>Documents in progress.</h2>
-            <p>Autosaved edits · Pay to export · 25-day re-download window</p>
+          <div className="dash-header-copy">
+            <span className="dash-eyebrow">Your Workspace</span>
+            <h2>CV Documents</h2>
+            <p>Every draft is saved in real time. Choose a document to edit, duplicate, or translate.</p>
           </div>
-          <div className="dash-header-actions">
-            {/* Additional header actions if needed */}
+          <div className="dash-stats">
+            <div className="stat-card">
+              <span className="stat-number">{cvs.length}</span>
+              <span className="stat-label">Total Documents</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-number">{cvs.filter((c) => c.downloadPaid).length}</span>
+              <span className="stat-label">Export Unlocked</span>
+            </div>
           </div>
         </header>
 
         {loading ? (
-          <div className="muted">Loading…</div>
+          <div className="dash-loading-wrap">
+            <div className="spinner" aria-label="Loading documents" />
+            <p>Loading your documents…</p>
+          </div>
         ) : cvs.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-state-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <h3>No CVs yet</h3>
-            <p>Create your first CV and iterate with instant preview.</p>
+            <div className="empty-state-icon">📄</div>
+            <h3>No CVs in your workspace yet</h3>
+            <p>Create your first professional CV with real-time preview and export readiness.</p>
             <div className="empty-state-actions">
-              <button type="button" className="btn btn-primary" onClick={handleCreate}>
-                Start building
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => setCreateModal({ isOpen: true, title: 'My First CV', templateId: 'modern-split' })}
+              >
+                Create your first CV
               </button>
             </div>
           </div>
         ) : (
-          <ul className="cv-grid stagger-children">
-            {cvs.map((cv) => (
-              <li key={cv._id} className="cv-card hover-lift">
-                <div className="cv-card-header">
-                  <h3 className="cv-card-title">{cv.title}</h3>
-                  <span className={`cv-card-status ${cv.downloadPaid ? 'paid' : ''}`}>
-                    {cv.downloadPaid ? 'Paid' : 'Draft'}
-                  </span>
-                </div>
-                <div className="cv-card-meta">
-                  <div className="cv-card-meta-item">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Updated {new Date(cv.updatedAt).toLocaleDateString()}
+          <ul className="cv-grid">
+            {cvs.map((cv) => {
+              const tmplLabel = TEMPLATES.find((t) => t.id === cv.templateId)?.label || 'Modern Split';
+              const thmLabel = THEMES.find((t) => t.id === cv.themeId)?.label || 'Clean Slate';
+              const isTranslation = Boolean(cv.sourceCvId);
+              const hasTranslations = Array.isArray(cv.translationCvIds) && cv.translationCvIds.length > 0;
+
+              return (
+                <li key={cv._id} className="cv-card">
+                  <div className="cv-card-topbar">
+                    <div className="cv-card-tags">
+                      {isTranslation ? (
+                        <span className="badge-translation">
+                          🌐 {languageLabel(cv.locale)} Copy
+                        </span>
+                      ) : (
+                        <span className="badge-source">Original</span>
+                      )}
+                      {cv.downloadPaid ? (
+                        <span className="badge-paid">✓ Export Unlocked</span>
+                      ) : (
+                        <span className="badge-draft">Draft</span>
+                      )}
+                    </div>
+                    {hasTranslations && (
+                      <span className="badge-has-trans" title="Has localized copies">
+                        🌍 {cv.translationCvIds.length} {cv.translationCvIds.length === 1 ? 'translation' : 'translations'}
+                      </span>
+                    )}
                   </div>
-                </div>
-                <p className="cv-card-description">
-                  {cv.downloadPaid ? 'Identity fields locked after export payment' : 'Ready to edit and export'}
-                </p>
-                <div className="cv-card-actions">
-                  <Link className="btn btn-secondary" to={`/builder/${cv._id}`}>
-                    Open
-                  </Link>
-                  <button type="button" className="btn btn-ghost" onClick={() => handleDuplicate(cv._id)}>
-                    Duplicate
-                  </button>
-                  <button type="button" className="btn btn-danger-ghost" onClick={() => openDeleteModal(cv)}>
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
+
+                  <div className="cv-card-body">
+                    <h3 className="cv-card-title">{cv.title}</h3>
+                    <div className="cv-card-config">
+                      <span className="config-pill">{tmplLabel}</span>
+                      <span className="config-pill">{thmLabel}</span>
+                      <span className="config-pill">{cv.layoutId === 'single' ? '1 Col' : '2 Col'}</span>
+                    </div>
+                    <p className="cv-card-date">
+                      Updated {new Date(cv.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  </div>
+
+                  <div className="cv-card-actions">
+                    <Link className="btn btn-primary small" to={`/builder/${cv._id}`}>
+                      Open Editor
+                    </Link>
+                    <button
+                      type="button"
+                      className="btn btn-secondary small"
+                      onClick={() => handleDuplicate(cv._id)}
+                    >
+                      Duplicate
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-ghost small text-danger"
+                      onClick={() => openDeleteModal(cv)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
 
+      {/* Create CV Modal */}
+      <Modal
+        isOpen={createModal.isOpen}
+        onClose={() => setCreateModal({ isOpen: false, title: '', templateId: 'modern-split' })}
+        title="Create a New CV"
+        footer={
+          <>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setCreateModal({ isOpen: false, title: '', templateId: 'modern-split' })}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleCreate}
+              disabled={creating}
+            >
+              {creating ? 'Creating…' : 'Start Building'}
+            </button>
+          </>
+        }
+      >
+        <form onSubmit={handleCreate} className="create-cv-form">
+          <div className="field">
+            <label htmlFor="cv-modal-title" className="field-label">
+              CV Title or Target Role
+            </label>
+            <input
+              id="cv-modal-title"
+              type="text"
+              className="input"
+              placeholder="e.g. Senior Software Engineer CV"
+              value={createModal.title}
+              onChange={(e) => setCreateModal((prev) => ({ ...prev, title: e.target.value }))}
+              autoFocus
+            />
+          </div>
+
+          <div className="field">
+            <label className="field-label">Starting Template</label>
+            <div className="modal-templates-grid">
+              {TEMPLATES.map((tmpl) => (
+                <label
+                  key={tmpl.id}
+                  className={`modal-template-option ${createModal.templateId === tmpl.id ? 'is-selected' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="templateId"
+                    value={tmpl.id}
+                    checked={createModal.templateId === tmpl.id}
+                    onChange={(e) => setCreateModal((prev) => ({ ...prev, templateId: e.target.value }))}
+                    className="sr-only"
+                  />
+                  <strong>{tmpl.label}</strong>
+                  <span>{tmpl.description}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
       <Modal
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, cvId: null, cvTitle: '' })}
-        title="Delete CV"
+        title="Delete CV Document"
         footer={
           <>
             <button
@@ -161,16 +282,16 @@ export default function DashboardPage() {
               className="btn btn-secondary"
               onClick={() => setDeleteModal({ isOpen: false, cvId: null, cvTitle: '' })}
             >
-              Cancel
+              Keep CV
             </button>
             <button type="button" className="btn btn-primary btn-danger" onClick={confirmDelete}>
-              Delete
+              Delete Document
             </button>
           </>
         }
       >
         <p>
-          Are you sure you want to delete <strong>"{deleteModal.cvTitle}"</strong>? This action cannot be undone.
+          Are you sure you want to delete <strong>"{deleteModal.cvTitle}"</strong>? This will permanently remove the document from your workspace.
         </p>
       </Modal>
     </AppShell>

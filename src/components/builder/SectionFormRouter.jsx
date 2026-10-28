@@ -43,6 +43,7 @@ export default function SectionFormRouter({ section, cv }) {
               key: 'bullets',
               label: 'What you did and achieved',
               type: 'textarea',
+              optional: true,
               placeholder: 'One idea per line: results, responsibilities, or skills you used.',
             },
           ]}
@@ -81,6 +82,7 @@ export default function SectionFormRouter({ section, cv }) {
               key: 'detail',
               label: 'Honors, focus, or coursework',
               type: 'textarea',
+              optional: true,
               placeholder: 'Optional: GPA, relevant modules, awards, thesis topic.',
             },
           ]}
@@ -103,6 +105,7 @@ export default function SectionFormRouter({ section, cv }) {
               label: 'Comfort level',
               suggestions: SKILL_LEVEL_SUGGESTIONS,
               placeholder: 'e.g. Proficient',
+              optional: true,
             },
           ]}
         />
@@ -129,12 +132,32 @@ export default function SectionFormRouter({ section, cv }) {
               key: 'link',
               label: 'Link',
               placeholder: 'https://…',
+              inputType: 'url',
+              optional: true,
             },
             {
               key: 'detail',
               label: 'What you did',
               type: 'textarea',
               placeholder: 'Your role, outcome, or what someone should know.',
+            },
+          ]}
+        />
+      );
+    case 'languages':
+      return (
+        <ItemsEditor
+          section={section}
+          title="Languages"
+          titleHint="Spoken or signed languages. Comfort level is optional."
+          fields={[
+            { key: 'name', label: 'Language', placeholder: 'e.g. English' },
+            {
+              key: 'level',
+              label: 'Comfort level',
+              suggestions: SKILL_LEVEL_SUGGESTIONS,
+              placeholder: 'e.g. Fluent',
+              optional: true,
             },
           ]}
         />

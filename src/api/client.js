@@ -1,6 +1,7 @@
 const TOKEN_KEY = 'cvforge_token';
 
-const API_BASE = import.meta.env.VITE_API_URL;
+// If VITE_API_URL is unset (e.g. standard local dev using Vite proxy), use relative path
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -26,7 +27,8 @@ async function request(path, options = {}) {
       ? JSON.stringify(options.body)
       : options.body;
 
-  const res = await fetch(`${API_BASE}/api${path}`, {
+  const url = `${API_BASE}/api${path}`;
+  const res = await fetch(url, {
     ...options,
     headers,
     body,
@@ -54,6 +56,9 @@ async function request(path, options = {}) {
 }
 
 export const api = {
+  login: (body) => request('/auth/login', { method: 'POST', body }),
+  register: (body) => request('/auth/register', { method: 'POST', body }),
+  devLogin: (body) => request('/auth/dev-login', { method: 'POST', body }),
   googleLogin: (idToken) => request('/auth/google', { method: 'POST', body: { idToken } }),
   me: () => request('/auth/me'),
   listCvs: () => request('/cvs'),
@@ -68,5 +73,6 @@ export const api = {
     request(`/payments/verify?reference=${encodeURIComponent(reference)}`),
   downloadStatus: (cvId) => request(`/downloads/status/${cvId}`),
   authorizeDownload: (cvId) => request(`/downloads/authorize/${cvId}`),
+  retryTranslation: (cvId) => request(`/cvs/${cvId}/translations/retry`, { method: 'POST' }),
   templates: () => request('/templates'),
 };

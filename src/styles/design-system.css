@@ -9,49 +9,49 @@
      Sophisticated, distinctive, professional
      ======================================== */
   
-  /* Primary brand - Deep charcoal with warmth */
-  --brand-primary: #1d2434;
-  --brand-primary-light: #313b50;
-  --brand-primary-dark: #121826;
+  /* Primary brand - Deep charcoal slate */
+  --brand-primary: #0f172a;
+  --brand-primary-light: #1e293b;
+  --brand-primary-dark: #020617;
   
-  /* Accent - Electric indigo with personality */
-  --accent: #59621e;
-  --accent-soft: #96a34d;
-  --accent-light: #edf0d2;
-  --accent-dark: #3e4614;
+  /* Accent - Vibrant sapphire blue */
+  --accent: #2563eb;
+  --accent-soft: #3b82f6;
+  --accent-light: #eff6ff;
+  --accent-dark: #1d4ed8;
   
-  /* Secondary accent - Warm amber for energy */
+  /* Secondary accent - Warm amber */
   --accent-secondary: #f59e0b;
   --accent-secondary-light: #fef3c7;
   
   /* Neutral backgrounds */
-  --bg-base: #f6f4ef;
-  --bg-surface: #efede6;
-  --bg-elevated: #fbfaf6;
-  --bg-subtle: #e7e4dc;
-  --bg-muted: #d9d5cb;
+  --bg-base: #f8fafc;
+  --bg-surface: #f1f5f9;
+  --bg-elevated: #ffffff;
+  --bg-subtle: #e2e8f0;
+  --bg-muted: #cbd5e1;
   
   /* Text hierarchy */
-  --text-primary: #1d2434;
-  --text-secondary: #697083;
-  --text-tertiary: #8b919e;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
   --text-inverse: #ffffff;
   
   /* Semantic colors */
-  --success: #16a34a;
-  --success-bg: #dcfce7;
-  --warning: #ca8a04;
-  --warning-bg: #fef9c3;
-  --error: #dc2626;
-  --error-bg: #fee2e2;
-  --info: #0891b2;
-  --info-bg: #cffafe;
+  --success: #10b981;
+  --success-bg: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-bg: #fffbeb;
+  --error: #ef4444;
+  --error-bg: #fef2f2;
+  --info: #0284c7;
+  --info-bg: #f0f9ff;
   
   /* Borders */
-  --border-subtle: #dcd8ce;
-  --border-default: #c9c4b8;
-  --border-strong: #9c968a;
-  --border-focus: #59621e;
+  --border-subtle: #f1f5f9;
+  --border-default: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-focus: #2563eb;
   
   /* ========================================
      TYPOGRAPHY
@@ -59,7 +59,7 @@
      ======================================== */
   
   /* Font families */
-  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
   --font-display: 'Fraunces', Georgia, serif;
   
@@ -101,7 +101,6 @@
   
   /* ========================================
      SPACING
-     Consistent, intentional scale
      ======================================== */
   
   --space-0: 0;
@@ -134,7 +133,6 @@
   
   /* ========================================
      BORDER RADIUS
-     Subtle, refined, not over-rounded
      ======================================== */
   
   --radius-none: 0;
@@ -148,20 +146,18 @@
   
   /* ========================================
      SHADOWS
-     Subtle depth, not heavy
      ======================================== */
   
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.2);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
   
   /* ========================================
      TRANSITIONS
-     Smooth, natural timing
      ======================================== */
   
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
@@ -180,7 +176,6 @@
   
   /* ========================================
      Z-INDEX
-     Layer management
      ======================================== */
   
   --z-0: 0;
@@ -193,7 +188,6 @@
   
   /* ========================================
      LAYOUT
-     Container and grid
      ======================================== */
   
   --container-sm: 640px;
@@ -201,13 +195,6 @@
   --container-lg: 1024px;
   --container-xl: 1200px;
   --container-2xl: 1400px;
-  
-  --grid-cols-1: repeat(1, minmax(0, 1fr));
-  --grid-cols-2: repeat(2, minmax(0, 1fr));
-  --grid-cols-3: repeat(3, minmax(0, 1fr));
-  --grid-cols-4: repeat(4, minmax(0, 1fr));
-  --grid-cols-6: repeat(6, minmax(0, 1fr));
-  --grid-cols-12: repeat(12, minmax(0, 1fr));
 }
 
 /* ========================================
@@ -242,6 +229,7 @@ body {
   width: 100%;
   max-width: 100vw;
   position: relative;
+  background-color: var(--bg-base);
 }
 
 #root {
@@ -249,6 +237,9 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ========================================

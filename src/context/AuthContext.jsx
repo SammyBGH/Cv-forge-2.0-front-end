@@ -41,6 +41,27 @@ export function AuthProvider({ children }) {
     return data.user;
   }, []);
 
+  const login = useCallback(async (email, password) => {
+    const data = await api.login({ email, password });
+    setToken(data.token);
+    setUser(data.user);
+    return data.user;
+  }, []);
+
+  const register = useCallback(async (email, password, name) => {
+    const data = await api.register({ email, password, name });
+    setToken(data.token);
+    setUser(data.user);
+    return data.user;
+  }, []);
+
+  const devLogin = useCallback(async (email) => {
+    const data = await api.devLogin({ email });
+    setToken(data.token);
+    setUser(data.user);
+    return data.user;
+  }, []);
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
@@ -51,10 +72,13 @@ export function AuthProvider({ children }) {
       user,
       bootstrapping,
       loginWithGoogle,
+      login,
+      register,
+      devLogin,
       logout,
       refresh,
     }),
-    [user, bootstrapping, loginWithGoogle, logout, refresh]
+    [user, bootstrapping, loginWithGoogle, login, register, devLogin, logout, refresh]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
