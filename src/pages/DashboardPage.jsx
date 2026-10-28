@@ -5,6 +5,7 @@ import { useToast } from '../context/ToastContext.jsx';
 import { api } from '../api/client.js';
 import AppShell from '../components/layout/AppShell.jsx';
 import Modal from '../components/ui/Modal.jsx';
+import { FileIcon, CheckIcon, GlobeIcon } from '../components/ui/Icons.jsx';
 import { TEMPLATES, THEMES, languageLabel } from '../utils/cvDesign.js';
 import '../styles/dashboard-new.css';
 import '../styles/animations.css';
@@ -121,7 +122,9 @@ export default function DashboardPage() {
           </div>
         ) : cvs.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-state-icon">📄</div>
+            <div className="empty-state-icon">
+              <FileIcon size={40} />
+            </div>
             <h3>No CVs in your workspace yet</h3>
             <p>Create your first professional CV with real-time preview and export readiness.</p>
             <div className="empty-state-actions">
@@ -148,20 +151,23 @@ export default function DashboardPage() {
                     <div className="cv-card-tags">
                       {isTranslation ? (
                         <span className="badge-translation">
-                          🌐 {languageLabel(cv.locale)} Copy
+                          <GlobeIcon size={11} /> {languageLabel(cv.locale)} Copy
                         </span>
                       ) : (
                         <span className="badge-source">Original</span>
                       )}
                       {cv.downloadPaid ? (
-                        <span className="badge-paid">✓ Export Unlocked</span>
+                        <span className="badge-paid">
+                          <CheckIcon size={11} /> Export Unlocked
+                        </span>
                       ) : (
                         <span className="badge-draft">Draft</span>
                       )}
                     </div>
                     {hasTranslations && (
                       <span className="badge-has-trans" title="Has localized copies">
-                        🌍 {cv.translationCvIds.length} {cv.translationCvIds.length === 1 ? 'translation' : 'translations'}
+                        <GlobeIcon size={12} /> {cv.translationCvIds.length}{' '}
+                        {cv.translationCvIds.length === 1 ? 'translation' : 'translations'}
                       </span>
                     )}
                   </div>

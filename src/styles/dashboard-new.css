@@ -148,6 +148,9 @@
 }
 
 .badge-translation {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -160,6 +163,9 @@
 }
 
 .badge-paid {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -183,6 +189,9 @@
 }
 
 .badge-has-trans {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   font-weight: 600;
   color: #0284c7;
@@ -260,7 +269,9 @@
 }
 
 .empty-state-icon {
-  font-size: 40px;
+  display: flex;
+  justify-content: center;
+  color: var(--text-tertiary);
   margin-bottom: var(--space-4);
 }
 

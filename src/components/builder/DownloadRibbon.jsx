@@ -1,4 +1,5 @@
 import { useMemo, forwardRef } from 'react';
+import { DownloadIcon } from '../ui/Icons.jsx';
 
 function formatRemaining(seconds) {
   const d = Math.floor(seconds / 86400);
@@ -34,7 +35,13 @@ const DownloadRibbon = forwardRef(({ status, onPay, payBusy, onExport, isExporti
           disabled={isExporting}
           onClick={onExport}
         >
-          {isExporting ? 'Generating PDF…' : '⬇ Download PDF'}
+          {isExporting ? (
+            'Generating PDF…'
+          ) : (
+            <>
+              <DownloadIcon size={14} /> Download PDF
+            </>
+          )}
         </button>
       </div>
     </div>

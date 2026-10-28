@@ -11,19 +11,78 @@ import DownloadRibbon from './DownloadRibbon.jsx';
 import { CVPdfDocument } from '../pdf/CVPdfDocument.jsx';
 import { LAYOUTS, TEMPLATES, THEMES, languageLabel } from '../../utils/cvDesign.js';
 import { sectionByType } from '../preview/cvSelectors.js';
+import {
+  UserIcon,
+  PenIcon,
+  BriefcaseIcon,
+  GraduationIcon,
+  BoltIcon,
+  FolderIcon,
+  AwardIcon,
+  GlobeIcon,
+  ClipboardIcon,
+  FileIcon,
+  CheckIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+} from '../ui/Icons.jsx';
 import '../../styles/builder-new.css';
 
 const SECTION_META = {
-  personal: { label: 'Contact Details', icon: '👤', required: true },
-  summary: { label: 'Professional Summary', icon: '✍️', recommended: true },
-  experience: { label: 'Work Experience', icon: '💼', recommended: true },
-  education: { label: 'Education', icon: '🎓', recommended: true },
-  skills: { label: 'Skills', icon: '⚡', recommended: true },
-  projects: { label: 'Projects & Highlights', icon: '🚀', optional: true },
-  certifications: { label: 'Certifications', icon: '📜', optional: true },
-  languages: { label: 'Languages', icon: '🌐', optional: true },
-  custom: { label: 'Additional Information', icon: '📋', optional: true },
+  personal: { label: 'Contact Details', required: true },
+  summary: { label: 'Professional Summary', recommended: true },
+  experience: { label: 'Work Experience', recommended: true },
+  education: { label: 'Education', recommended: true },
+  skills: { label: 'Skills', recommended: true },
+  projects: { label: 'Projects & Highlights', optional: true },
+  certifications: { label: 'Certifications', optional: true },
+  languages: { label: 'Languages', optional: true },
+  custom: { label: 'Additional Information', optional: true },
 };
+
+const SECTION_ICONS = {
+  personal: UserIcon,
+  summary: PenIcon,
+  experience: BriefcaseIcon,
+  education: GraduationIcon,
+  skills: BoltIcon,
+  projects: FolderIcon,
+  certifications: AwardIcon,
+  languages: GlobeIcon,
+  custom: ClipboardIcon,
+};
+
+function ToolbarSelect({ id, label, value, options, onChange, swatch }) {
+  const current = options.find((opt) => opt.value === value);
+
+  return (
+    <div className="control-group">
+      <label className="control-group-label" htmlFor={id}>
+        {label}
+      </label>
+      <div className="toolbar-select-wrap">
+        {swatch ? (
+          <span className="toolbar-swatch" style={{ backgroundColor: swatch }} aria-hidden="true" />
+        ) : null}
+        <select
+          id={id}
+          className="toolbar-select"
+          value={value}
+          title={current?.description || label}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}
 
 const TRANSLATION_CHOICES = [
   { code: 'fr', label: 'French (Français)' },
@@ -190,6 +249,11 @@ export default function BuilderWorkspace({ headerLeft }) {
   const currentTheme = cv.themeId || 'light';
   const currentLayout = cv.layoutId || 'two-column';
 
+  const templateLabel = TEMPLATES.find((t) => t.id === currentTemplate)?.label || 'Modern Split';
+  const themeLabel = THEMES.find((t) => t.id === currentTheme)?.label || 'Clean Slate';
+  const themeSwatch = THEMES.find((t) => t.id === currentTheme)?.swatch;
+  const layoutLabel = LAYOUTS.find((l) => l.id === currentLayout)?.label || 'Two Column';
+
   return (
     <div className="builder-shell">
       <DownloadRibbon
@@ -204,24 +268,28 @@ export default function BuilderWorkspace({ headerLeft }) {
       {/* Linked Translation Banners */}
       {cv.sourceCvId && (
         <div className="source-cv-banner">
-          <span className="banner-icon">🌐</span>
+          <span className="banner-icon">
+            <GlobeIcon size={15} />
+          </span>
           <span>
             You are editing a translated copy ({languageLabel(cv.locale)}). Your original English CV is saved separately.
           </span>
           <Link to={`/builder/${cv.sourceCvId}`} className="banner-link">
-            ← View Original CV
+            <ArrowLeftIcon size={13} /> View Original CV
           </Link>
         </div>
       )}
 
       {cv.translationCvIds?.length > 0 && (
         <div className="translation-list-banner">
-          <span className="banner-icon">🌍</span>
+          <span className="banner-icon">
+            <GlobeIcon size={15} />
+          </span>
           <span>Translations of this CV:</span>
           <div className="banner-chips">
             {cv.translationCvIds.map((tId, idx) => (
               <Link key={tId} to={`/builder/${tId}`} className="banner-chip-link">
-                Copy #{idx + 1} →
+                Copy #{idx + 1} <ArrowRightIcon size={11} />
               </Link>
             ))}
           </div>
@@ -246,66 +314,30 @@ export default function BuilderWorkspace({ headerLeft }) {
         </div>
 
         <div className="builder-topbar-controls">
-          {/* Template Selector */}
-          <div className="control-group">
-            <span className="control-group-label">Template</span>
-            <div className="segmented-control" role="radiogroup" aria-label="Template selection">
-              {TEMPLATES.map((tmpl) => (
-                <button
-                  key={tmpl.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={currentTemplate === tmpl.id}
-                  className={`segmented-btn ${currentTemplate === tmpl.id ? 'is-selected' : ''}`}
-                  onClick={() => updateCv({ templateId: tmpl.id })}
-                  title={tmpl.description}
-                >
-                  {tmpl.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <ToolbarSelect
+            id="tb-template"
+            label="Template"
+            value={currentTemplate}
+            options={TEMPLATES.map((t) => ({ value: t.id, label: t.label, description: t.description }))}
+            onChange={(v) => updateCv({ templateId: v })}
+          />
 
-          {/* Theme Selector */}
-          <div className="control-group">
-            <span className="control-group-label">Theme</span>
-            <div className="theme-swatches-group" role="radiogroup" aria-label="Theme selection">
-              {THEMES.map((thm) => (
-                <button
-                  key={thm.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={currentTheme === thm.id}
-                  className={`theme-swatch-btn ${currentTheme === thm.id ? 'is-selected' : ''}`}
-                  onClick={() => updateCv({ themeId: thm.id })}
-                  title={`${thm.label} — ${thm.description}`}
-                >
-                  <span className="swatch-dot" style={{ backgroundColor: thm.swatch }} />
-                  <span className="swatch-label">{thm.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <ToolbarSelect
+            id="tb-theme"
+            label="Theme"
+            value={currentTheme}
+            swatch={themeSwatch}
+            options={THEMES.map((t) => ({ value: t.id, label: t.label, description: t.description }))}
+            onChange={(v) => updateCv({ themeId: v })}
+          />
 
-          {/* Layout Selector */}
-          <div className="control-group">
-            <span className="control-group-label">Layout</span>
-            <div className="segmented-control" role="radiogroup" aria-label="Layout selection">
-              {LAYOUTS.map((lay) => (
-                <button
-                  key={lay.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={currentLayout === lay.id}
-                  className={`segmented-btn ${currentLayout === lay.id ? 'is-selected' : ''}`}
-                  onClick={() => updateCv({ layoutId: lay.id })}
-                  title={lay.description}
-                >
-                  {lay.id === 'two-column' ? '◫ 2 Columns' : '▭ 1 Column'}
-                </button>
-              ))}
-            </div>
-          </div>
+          <ToolbarSelect
+            id="tb-layout"
+            label="Layout"
+            value={currentLayout}
+            options={LAYOUTS.map((l) => ({ value: l.id, label: `${l.label} Layout`, description: l.description }))}
+            onChange={(v) => updateCv({ layoutId: v })}
+          />
 
           {/* Zoom controls */}
           <div className="zoom-cluster">
@@ -348,7 +380,7 @@ export default function BuilderWorkspace({ headerLeft }) {
             <div className="translate-card-head">
               <div>
                 <h3 id="translate-heading" className="translate-heading">
-                  🌐 Translate into another language
+                  <GlobeIcon size={15} /> Translate into another language
                 </h3>
                 <p className="translate-intro">
                   Get a professionally localized copy for international applications. Your original CV remains untouched.
@@ -408,7 +440,8 @@ export default function BuilderWorkspace({ headerLeft }) {
           <ol className="section-order" aria-labelledby="workspace-heading">
             {sortedSections.map((s) => {
               const expanded = openSection === s.key || openSection === s.type;
-              const meta = SECTION_META[s.type] || { label: 'Custom Section', icon: '📄' };
+              const meta = SECTION_META[s.type] || { label: 'Custom Section' };
+              const SectionIcon = SECTION_ICONS[s.type] || FileIcon;
               const isFilled = isSectionCompleted(s);
 
               return (
@@ -420,9 +453,15 @@ export default function BuilderWorkspace({ headerLeft }) {
                       aria-expanded={expanded}
                       onClick={() => setOpenSection(expanded ? '' : s.key)}
                     >
-                      <span className="section-icon-badge">{meta.icon}</span>
+                      <span className="section-icon-badge">
+                        <SectionIcon size={16} />
+                      </span>
                       <span className="section-title-label">{meta.label}</span>
-                      {isFilled && <span className="section-filled-badge" title="Completed">✓</span>}
+                      {isFilled && (
+                        <span className="section-filled-badge" title="Completed">
+                          <CheckIcon size={11} />
+                        </span>
+                      )}
                       <span className="section-toggle-action">{expanded ? 'Close' : 'Open'}</span>
                     </button>
 
@@ -434,7 +473,7 @@ export default function BuilderWorkspace({ headerLeft }) {
                         aria-label={`Move ${meta.label} up`}
                         title="Move section up"
                       >
-                        ▲
+                        <ChevronUpIcon size={13} />
                       </button>
                       <button
                         type="button"
@@ -443,7 +482,7 @@ export default function BuilderWorkspace({ headerLeft }) {
                         aria-label={`Move ${meta.label} down`}
                         title="Move section down"
                       >
-                        ▼
+                        <ChevronDownIcon size={13} />
                       </button>
                     </div>
                   </div>
@@ -470,9 +509,9 @@ export default function BuilderWorkspace({ headerLeft }) {
               <span className="live-status-text">Updates live</span>
             </div>
             <div className="preview-toolbar-badges">
-              <span className="preview-badge">{currentTemplate}</span>
-              <span className="preview-badge">{currentTheme}</span>
-              <span className="preview-badge">{currentLayout}</span>
+              <span className="preview-badge">{templateLabel}</span>
+              <span className="preview-badge">{themeLabel}</span>
+              <span className="preview-badge">{layoutLabel}</span>
             </div>
           </div>
 

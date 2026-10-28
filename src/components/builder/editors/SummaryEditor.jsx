@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import { useCVBuilder } from '../../../context/CVBuilderContext.jsx';
+import { BulbIcon, XIcon } from '../../ui/Icons.jsx';
 
 const STARTER_TEMPLATES = [
   {
@@ -61,7 +62,15 @@ export default function SummaryEditor({ section }) {
           className="btn-ghost small starter-btn"
           onClick={() => setShowStarters((prev) => !prev)}
         >
-          {showStarters ? '✕ Close templates' : '💡 Browse starter templates'}
+          {showStarters ? (
+            <>
+              <XIcon size={12} /> Close templates
+            </>
+          ) : (
+            <>
+              <BulbIcon size={12} /> Browse starter templates
+            </>
+          )}
         </button>
       </div>
 

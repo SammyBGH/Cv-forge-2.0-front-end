@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
+import { ArrowLeftIcon } from '../components/ui/Icons.jsx';
 import '../styles/login-new.css';
 
 export default function LoginPage() {
@@ -222,7 +223,7 @@ export default function LoginPage() {
                 onClick={handleDevSignIn}
                 disabled={busy}
               >
-                ⚡ Quick Dev Sign In (developer@cvforge.local)
+                Quick Dev Sign In (developer@cvforge.local)
               </button>
             </div>
           )}
@@ -233,7 +234,7 @@ export default function LoginPage() {
             </p>
             <p>
               <Link to="/" className="back-link">
-                ← Back to homepage
+                <ArrowLeftIcon size={13} /> Back to homepage
               </Link>
             </p>
           </div>

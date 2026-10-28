@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import { useCVBuilder } from '../../../context/CVBuilderContext.jsx';
 import AutocompleteInput from '../../ui/AutocompleteInput.jsx';
+import { FileIcon, ChevronUpIcon, ChevronDownIcon, XIcon } from '../../ui/Icons.jsx';
 
 const POPULAR_SKILL_SUGGESTIONS = [
   'JavaScript',
@@ -150,7 +151,7 @@ export default function ItemsEditor({ section, title, titleHint, fields }) {
       {items.length === 0 ? (
         <div className="items-empty">
           <div className="items-empty-icon" aria-hidden="true">
-            📝
+            <FileIcon size={26} />
           </div>
           <p className="items-empty-text">No entries added yet.</p>
           <p className="muted small">Add your experience or credentials to make your CV stand out.</p>
@@ -195,7 +196,7 @@ export default function ItemsEditor({ section, title, titleHint, fields }) {
                     aria-label="Move entry up"
                     title="Move up"
                   >
-                    ▲
+                    <ChevronUpIcon size={13} />
                   </button>
                   <button
                     type="button"
@@ -205,7 +206,7 @@ export default function ItemsEditor({ section, title, titleHint, fields }) {
                     aria-label="Move entry down"
                     title="Move down"
                   >
-                    ▼
+                    <ChevronDownIcon size={13} />
                   </button>
                   <button
                     type="button"
@@ -214,7 +215,7 @@ export default function ItemsEditor({ section, title, titleHint, fields }) {
                     aria-label="Delete entry"
                     title="Remove entry"
                   >
-                    ✕
+                    <XIcon size={13} />
                   </button>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import { useId } from 'react';
 import { useCVBuilder } from '../../../context/CVBuilderContext.jsx';
 import { isFieldLocked } from '../../../utils/locks.js';
 import AutocompleteInput from '../../ui/AutocompleteInput.jsx';
+import { LockIcon } from '../../ui/Icons.jsx';
 
 const QUICK_HEADLINES = [
   'Software Engineer',
@@ -43,7 +44,11 @@ function Field({ f, d, locked, baseId, patch }) {
           {f.label}
         </label>
         <span className={`field-badge ${badgeClass}`}>{badgeLabel}</span>
-        {locked ? <span className="lock-tag">🔒 Locked after export</span> : null}
+        {locked ? (
+          <span className="lock-tag">
+            <LockIcon size={11} /> Locked after export
+          </span>
+        ) : null}
       </div>
 
       {f.suggestions && !locked ? (
